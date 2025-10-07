@@ -28,6 +28,14 @@ export default {
                     800: '#1e293b',
                     900: '#0f172a',
                 },
+                // Added brand colors based on suggested scheme
+                theme: {
+                    teal: '#008080', // primary accent
+                    lightGray: '#F5F5F5', // secondary background
+                    charcoal: '#222222', // main text
+                    brightBlue: '#007BFF', // CTA
+                    emerald: '#2ECC71', // alternate CTA
+                },
                 brand: {
                     black: '#000000',
                     white: '#ffffff',

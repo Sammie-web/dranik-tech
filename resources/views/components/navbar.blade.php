@@ -12,13 +12,13 @@
             </div>
 
             <!-- Desktop Navigation -->
-            <div class="hidden md:flex items-center space-x-8">
+            {{-- <div class="hidden md:flex items-center space-x-8">
                 <a href="{{ route('home') }}" class="text-gray-700 hover:text-black transition-colors duration-200">Home</a>
                 <a href="{{ route('services.index') }}" class="text-gray-700 hover:text-black transition-colors duration-200">Services</a>
                 <a href="{{ route('categories.index') }}" class="text-gray-700 hover:text-black transition-colors duration-200">Categories</a>
                 <a href="{{ route('about') }}" class="text-gray-700 hover:text-black transition-colors duration-200">About</a>
                 <a href="{{ route('contact') }}" class="text-gray-700 hover:text-black transition-colors duration-200">Contact</a>
-            </div>
+            </div> --}}
 
             <!-- Desktop Auth Buttons -->
             <div class="hidden md:flex items-center space-x-4">
@@ -45,7 +45,7 @@
                              x-transition:leave-end="opacity-0 scale-95"
                              @click.away="dropdownOpen = false"
                              class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                            <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Dashboard</a>
+                            {{-- <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Dashboard</a> --}}
                             <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
                             @if(auth()->user()->isProvider())
                                 <a href="{{ route('provider.dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Provider Dashboard</a>

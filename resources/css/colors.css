@@ -1,0 +1,21 @@
+@layer base {
+  /* Global background and text color */
+  body {
+    @apply bg-theme-lightGray text-theme-charcoal;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-theme-teal text-white hover:bg-theme-teal/90 px-4 py-2 rounded;
+  }
+  .btn-cta {
+    @apply bg-theme-brightBlue text-white hover:bg-theme-brightBlue/90 px-4 py-2 rounded;
+  }
+  .btn-success {
+    @apply bg-theme-emerald text-white hover:bg-theme-emerald/90 px-4 py-2 rounded;
+  }
+  a {
+    @apply text-theme-teal hover:underline;
+  }
+}

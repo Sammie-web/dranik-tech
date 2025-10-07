@@ -15,7 +15,7 @@
                     <span class="text-gray-300">Across Africa</span>
                 </h1>
                 <p class="text-xl text-gray-300 mb-8 leading-relaxed">
-                    Connect with verified service providers for home services, beauty, events, healthcare, and more. Quality guaranteed, payments secured.
+                    Book trusted services, anytime, anywhere
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4">
                     <a href="{{ route('services.index') }}" class="bg-white text-black px-8 py-4 rounded-lg font-semibold hover:bg-gray-200 transition-colors duration-200 text-center">
