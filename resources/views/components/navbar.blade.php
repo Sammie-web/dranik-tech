@@ -7,18 +7,18 @@
                     <div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
                         <span class="text-white font-bold text-sm">D</span>
                     </div>
-                    <span class="text-xl font-bold text-gray-900">D'RANiK Techs</span>
+                    <span class="text-xl font-bold text-gray-900">D'RANIK Techs</span>
                 </a>
             </div>
 
             <!-- Desktop Navigation -->
-            {{-- <div class="hidden md:flex items-center space-x-8">
+            <div class="hidden md:flex items-center space-x-8">
                 <a href="{{ route('home') }}" class="text-gray-700 hover:text-black transition-colors duration-200">Home</a>
                 <a href="{{ route('services.index') }}" class="text-gray-700 hover:text-black transition-colors duration-200">Services</a>
                 <a href="{{ route('categories.index') }}" class="text-gray-700 hover:text-black transition-colors duration-200">Categories</a>
                 <a href="{{ route('about') }}" class="text-gray-700 hover:text-black transition-colors duration-200">About</a>
                 <a href="{{ route('contact') }}" class="text-gray-700 hover:text-black transition-colors duration-200">Contact</a>
-            </div> --}}
+            </div>
 
             <!-- Desktop Auth Buttons -->
             <div class="hidden md:flex items-center space-x-4">

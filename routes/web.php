@@ -65,61 +65,69 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
-    // Booking routes
-    Route::get('/services/{service}/book', [\App\Http\Controllers\BookingController::class, 'create'])->name('bookings.create');
-    Route::post('/services/{service}/book', [\App\Http\Controllers\BookingController::class, 'store'])->name('bookings.store');
-    Route::get('/bookings/{booking}', [\App\Http\Controllers\BookingController::class, 'show'])->name('bookings.show');
-    Route::get('/bookings/{booking}/payment', [\App\Http\Controllers\BookingController::class, 'payment'])->name('bookings.payment');
-    Route::patch('/bookings/{booking}/cancel', [\App\Http\Controllers\BookingController::class, 'cancel'])->name('bookings.cancel');
-    Route::patch('/bookings/{booking}/confirm', [\App\Http\Controllers\BookingController::class, 'confirm'])->name('bookings.confirm');
-    Route::patch('/bookings/{booking}/complete', [\App\Http\Controllers\BookingController::class, 'complete'])->name('bookings.complete');
-
-    // Customer booking history and receipt
-    Route::get('/my/bookings', [\App\Http\Controllers\BookingController::class, 'history'])->name('bookings.history');
-    Route::get('/bookings/{booking}/receipt', [\App\Http\Controllers\BookingController::class, 'receipt'])->name('bookings.receipt');
-    
-    // Payment routes
-    Route::post('/payments/{booking}/initialize', [\App\Http\Controllers\PaymentController::class, 'initialize'])->name('payments.initialize');
-    Route::post('/payments/{payment}/refund', [\App\Http\Controllers\PaymentController::class, 'refund'])->name('payments.refund');
-    
-    // Review routes
-    Route::get('/services/{service}/reviews', [\App\Http\Controllers\ReviewController::class, 'index'])->name('reviews.index');
-    Route::get('/bookings/{booking}/review/create', [\App\Http\Controllers\ReviewController::class, 'create'])->name('reviews.create');
-    Route::post('/bookings/{booking}/review', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
-    Route::get('/reviews/{review}', [\App\Http\Controllers\ReviewController::class, 'show'])->name('reviews.show');
-    Route::get('/reviews/{review}/edit', [\App\Http\Controllers\ReviewController::class, 'edit'])->name('reviews.edit');
-    Route::patch('/reviews/{review}', [\App\Http\Controllers\ReviewController::class, 'update'])->name('reviews.update');
-    Route::delete('/reviews/{review}', [\App\Http\Controllers\ReviewController::class, 'destroy'])->name('reviews.destroy');
-    Route::post('/reviews/{review}/report', [\App\Http\Controllers\ReviewController::class, 'report'])->name('reviews.report');
-    Route::get('/providers/{provider}/reviews', [\App\Http\Controllers\ReviewController::class, 'providerReviews'])->name('reviews.provider');
-    Route::get('/my-reviews', [\App\Http\Controllers\ReviewController::class, 'customerReviews'])->name('reviews.customer');
-    
-    // Admin review routes
-    Route::patch('/reviews/{review}/toggle-featured', [\App\Http\Controllers\ReviewController::class, 'toggleFeatured'])->name('reviews.toggle-featured')->middleware('can:admin');
-    
-    // Notification routes
-    Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
-    Route::patch('/notifications/{notification}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.read');
-    Route::patch('/notifications/mark-all-read', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
-    Route::delete('/notifications/{notification}', [\App\Http\Controllers\NotificationController::class, 'destroy'])->name('notifications.destroy');
-    
-    // API routes for notifications (AJAX)
-    Route::get('/api/notifications/count', [\App\Http\Controllers\NotificationController::class, 'getUnreadCount'])->name('api.notifications.count');
-    Route::get('/api/notifications/recent', [\App\Http\Controllers\NotificationController::class, 'getRecent'])->name('api.notifications.recent');
-    // Provider routes
+    // Routes requiring verified email
     Route::middleware('verified')->group(function () {
-        Route::prefix('provider')->group(function () {
-            Route::get('/services/active', [\App\Http\Controllers\ProviderController::class, 'activeServices'])->name('provider.services.active');
-            Route::get('/bookings', [\App\Http\Controllers\ProviderController::class, 'allBookings'])->name('provider.bookings');
-            Route::get('/services/pending', [\App\Http\Controllers\ProviderController::class, 'pendingServices'])->name('provider.services.pending');
-            Route::get('/withdrawals', [\App\Http\Controllers\ProviderController::class, 'withdrawals'])->name('provider.withdrawals');
-            Route::get('/biodata', [\App\Http\Controllers\ProviderController::class, 'biodata'])->name('provider.biodata');
-            Route::post('/biodata', [\App\Http\Controllers\ProviderController::class, 'updateBiodata'])->name('provider.biodata.update');
-            Route::get('/payments', [\App\Http\Controllers\ProviderController::class, 'payments'])->name('provider.payments');
-            Route::get('/chats', [\App\Http\Controllers\ProviderController::class, 'chatList'])->name('provider.chats');
-            Route::get('/manage/services', [\App\Http\Controllers\ProviderController::class, 'manageServices'])->name('provider.manage.services');
-            Route::get('/manage/categories', [\App\Http\Controllers\ProviderController::class, 'manageCategories'])->name('provider.manage.categories');
+        // Booking routes
+        Route::get('/services/{service}/book', [\App\Http\Controllers\BookingController::class, 'create'])->name('bookings.create');
+        Route::post('/services/{service}/book', [\App\Http\Controllers\BookingController::class, 'store'])->name('bookings.store');
+        Route::get('/bookings/{booking}', [\App\Http\Controllers\BookingController::class, 'show'])->name('bookings.show');
+        Route::get('/bookings/{booking}/payment', [\App\Http\Controllers\BookingController::class, 'payment'])->name('bookings.payment');
+        Route::patch('/bookings/{booking}/cancel', [\App\Http\Controllers\BookingController::class, 'cancel'])->name('bookings.cancel');
+        Route::patch('/bookings/{booking}/confirm', [\App\Http\Controllers\BookingController::class, 'confirm'])->name('bookings.confirm');
+        Route::patch('/bookings/{booking}/complete', [\App\Http\Controllers\BookingController::class, 'complete'])->name('bookings.complete');
+
+        // Customer booking history and receipt
+        Route::get('/my/bookings', [\App\Http\Controllers\BookingController::class, 'history'])->name('bookings.history');
+        Route::get('/bookings/{booking}/receipt', [\App\Http\Controllers\BookingController::class, 'receipt'])->name('bookings.receipt');
+        
+        // Payment routes
+        Route::post('/payments/{booking}/initialize', [\App\Http\Controllers\PaymentController::class, 'initialize'])->name('payments.initialize');
+        Route::post('/payments/{payment}/refund', [\App\Http\Controllers\PaymentController::class, 'refund'])->name('payments.refund');
+        
+        // Review routes
+        Route::get('/services/{service}/reviews', [\App\Http\Controllers\ReviewController::class, 'index'])->name('reviews.index');
+        Route::get('/bookings/{booking}/review/create', [\App\Http\Controllers\ReviewController::class, 'create'])->name('reviews.create');
+        Route::post('/bookings/{booking}/review', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
+        Route::get('/reviews/{review}', [\App\Http\Controllers\ReviewController::class, 'show'])->name('reviews.show');
+        Route::get('/reviews/{review}/edit', [\App\Http\Controllers\ReviewController::class, 'edit'])->name('reviews.edit');
+        Route::patch('/reviews/{review}', [\App\Http\Controllers\ReviewController::class, 'update'])->name('reviews.update');
+        Route::delete('/reviews/{review}', [\App\Http\Controllers\ReviewController::class, 'destroy'])->name('reviews.destroy');
+        Route::post('/reviews/{review}/report', [\App\Http\Controllers\ReviewController::class, 'report'])->name('reviews.report');
+        Route::get('/providers/{provider}/reviews', [\App\Http\Controllers\ReviewController::class, 'providerReviews'])->name('reviews.provider');
+        Route::get('/my-reviews', [\App\Http\Controllers\ReviewController::class, 'customerReviews'])->name('reviews.customer');
+        
+        // Admin review routes
+        Route::patch('/reviews/{review}/toggle-featured', [\App\Http\Controllers\ReviewController::class, 'toggleFeatured'])->name('reviews.toggle-featured')->middleware('can:admin');
+        
+        // Notification routes
+        Route::get('/notifications', [\App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+        Route::patch('/notifications/{notification}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.read');
+        Route::patch('/notifications/mark-all-read', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
+        Route::delete('/notifications/{notification}', [\App\Http\Controllers\NotificationController::class, 'destroy'])->name('notifications.destroy');
+        
+        // API routes for notifications (AJAX)
+        Route::get('/api/notifications/count', [\App\Http\Controllers\NotificationController::class, 'getUnreadCount'])->name('api.notifications.count');
+        Route::get('/api/notifications/recent', [\App\Http\Controllers\NotificationController::class, 'getRecent'])->name('api.notifications.recent');
+
+        // Provider routes (still protected by verified middleware)
+        Route::middleware('verified')->group(function () {
+            Route::prefix('provider')->group(function () {
+                Route::get('/services/active', [\App\Http\Controllers\ProviderController::class, 'activeServices'])->name('provider.services.active');
+                Route::get('/bookings', [\App\Http\Controllers\ProviderController::class, 'allBookings'])->name('provider.bookings');
+                Route::get('/services/pending', [\App\Http\Controllers\ProviderController::class, 'pendingServices'])->name('provider.services.pending');
+                Route::get('/withdrawals', [\App\Http\Controllers\ProviderController::class, 'withdrawals'])->name('provider.withdrawals');
+                Route::get('/biodata', [\App\Http\Controllers\ProviderController::class, 'biodata'])->name('provider.biodata');
+                Route::post('/biodata', [\App\Http\Controllers\ProviderController::class, 'updateBiodata'])->name('provider.biodata.update');
+                Route::get('/payments', [\App\Http\Controllers\ProviderController::class, 'payments'])->name('provider.payments');
+                Route::get('/chats', [\App\Http\Controllers\ProviderController::class, 'chatList'])->name('provider.chats');
+                Route::get('/manage/services', [\App\Http\Controllers\ProviderController::class, 'manageServices'])->name('provider.manage.services');
+                Route::get('/manage/categories', [\App\Http\Controllers\ProviderController::class, 'manageCategories'])->name('provider.manage.categories');
+            });
         });
+
+        // Chat routes per booking
+        Route::get('/bookings/{booking}/chat', [\App\Http\Controllers\MessageController::class, 'thread'])->name('chat.thread');
+        Route::post('/bookings/{booking}/chat', [\App\Http\Controllers\MessageController::class, 'send'])->name('chat.send');
     });
 
     // Admin routes

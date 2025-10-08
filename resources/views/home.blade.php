@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'D\'RANiK Techs - Digital Service Booking Platform')
+@section('title', 'D\'RANIK Techs - Digital Service Booking Platform')
 @section('description', 'Book trusted services across Africa. Home, beauty, events, healthcare and more. Verified providers, secure payments, seamless booking experience.')
 
 @section('content')
@@ -11,15 +11,17 @@
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div class="animate-fade-in">
                 <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-                    Book Trusted Services
-                    <span class="text-gray-300">Across Africa</span>
+                    {{-- Book Trusted Services --}} Book Trusted Services Anytime, 
+                    <span class="text-gray-300">Anywhere in Africa</span>
+                    {{-- <span class="text-gray-300">Across Africa</span> --}}
                 </h1>
                 <p class="text-xl text-gray-300 mb-8 leading-relaxed">
-                    Book trusted services, anytime, anywhere
+                    {{-- Book trusted services, anytime, anywhere. --}}
+                    Connect with verified service providers for home services, beauty, events, healthcare, and more. Secure payments, guaranteed quality.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4">
                     <a href="{{ route('services.index') }}" class="bg-white text-black px-8 py-4 rounded-lg font-semibold hover:bg-gray-200 transition-colors duration-200 text-center">
-                        Browse Services
+                        Find a Service
                     </a>
                     <a href="{{ route('provider.register') }}" class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-black transition-colors duration-200 text-center">
                         Become a Provider
@@ -29,7 +31,7 @@
             <div class="relative animate-slide-up">
                 <div class="bg-white rounded-2xl p-8 shadow-2xl">
                     <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-xl font-semibold text-gray-900">Quick Service Search</h3>
+                        <h3 class="text-xl font-semibold text-gray-900">What service do you need?</h3>
                         <i data-feather="search" class="w-6 h-6 text-gray-600"></i>
                     </div>
                     <form action="{{ route('services.index') }}" method="GET" class="space-y-4">

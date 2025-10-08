@@ -7,7 +7,7 @@
                     <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
                         <span class="text-black font-bold text-sm">D</span>
                     </div>
-                    <span class="text-xl font-bold">D'RANiK Techs</span>
+                    <span class="text-xl font-bold">D'RANIK Techs</span>
                 </div>
                 <p class="text-gray-300 mb-4 max-w-md">
                     Your trusted digital service booking platform connecting customers with verified service providers across Africa. Quality services, trusted professionals, seamless booking.
@@ -37,7 +37,7 @@
                     <li><a href="{{ route('categories.index') }}" class="text-gray-300 hover:text-white transition-colors duration-200">Categories</a></li>
                     <li><a href="{{ route('about') }}" class="text-gray-300 hover:text-white transition-colors duration-200">About Us</a></li>
                     <li><a href="{{ route('contact') }}" class="text-gray-300 hover:text-white transition-colors duration-200">Contact</a></li>
-                    <li><a href="{{ route('blog.index') }}" class="text-gray-300 hover:text-white transition-colors duration-200">Blog</a></li>
+                    {{-- <li><a href="{{ route('blog.index') }}" class="text-gray-300 hover:text-white transition-colors duration-200">Blog</a></li> --}}
                 </ul>
             </div>
 
@@ -74,7 +74,7 @@
         <!-- Bottom Bar -->
         <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
             <p class="text-gray-400 text-sm mb-4 md:mb-0">
-                © {{ date('Y') }} D'RANiK Techs. All rights reserved.
+                © {{ date('Y') }} D'RANIK Techs. All rights reserved.
             </p>
             <div class="flex items-center space-x-6 text-sm text-gray-400">
                 <span class="flex items-center">

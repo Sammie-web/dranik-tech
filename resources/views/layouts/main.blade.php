@@ -4,9 +4,9 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <meta name="description" content="@yield('description', 'D\'RANiK Techs - Your trusted digital service booking platform across Africa')">
+        <meta name="description" content="@yield('description', 'D\'RANIK Techs - Your trusted digital service booking platform across Africa')">
 
-        <title>@yield('title', 'D\'RANiK Techs - Digital Service Booking Platform')</title>
+        <title>@yield('title', 'D\'RANIK Techs - Digital Service Booking Platform')</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
