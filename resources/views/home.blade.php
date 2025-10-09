@@ -326,7 +326,7 @@
     <section class="py-16 bg-black text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to Get Started?</h2>
-            <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">Join thousands of satisfied customers who trust D'RANiK
+            <p class="text-xl text-gray-100 mb-8 max-w-2xl mx-auto">Join thousands of satisfied customers who trust D'RANiK
                 Techs for their service needs.</p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="{{ route('register') }}"
