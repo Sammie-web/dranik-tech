@@ -18,7 +18,7 @@
         <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/sidebar-toggle.js'])
     </head>
-    <body class="font-sans antialiased bg-white">
+    <body class="font-sans antialiased bg-theme-lightGray text-theme-charcoal">
         <div class="min-h-screen flex">
             @include('layouts.sidebar')
 

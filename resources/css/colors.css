@@ -2,6 +2,8 @@
   /* Global background and text color */
   body {
     @apply bg-theme-lightGray text-theme-charcoal;
+    /* Ensure fallback color for older components */
+    color: #222222;
   }
 }
 
@@ -17,5 +19,27 @@
   }
   a {
     @apply text-theme-teal hover:underline;
+  }
+
+  /* Backwards-compatibility: convert existing black CTAs to the new bright blue
+     Many templates use `bg-black text-white` for CTA buttons. This selector
+     targets those common combinations and displays the new bright blue color
+     without changing every template. */
+  .bg-black.text-white,
+  a.bg-black.text-white,
+  button.bg-black.text-white,
+  .bg-black.text-white:hover,
+  a.bg-black,
+  button.bg-black {
+    background-color: #007BFF;
+    border-color: #007BFF;
+    color: #ffffff;
+  }
+
+  .bg-black.text-white:hover,
+  a.bg-black:hover,
+  button.bg-black:hover {
+    background-color: #006ae6;
+    border-color: #006ae6;
   }
 }
