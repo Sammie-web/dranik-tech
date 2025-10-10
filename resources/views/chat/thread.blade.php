@@ -45,6 +45,41 @@
         const box = document.getElementById('chatBox');
         if (box) { box.scrollTop = box.scrollHeight; }
     </script>
+    <script>
+        // Real-time listener: append incoming messages via Echo
+        (function() {
+            if (!window.Echo) return;
+
+            const bookingId = '{{ $booking->id }}';
+            const channel = window.Echo.private('booking.' + bookingId);
+
+            channel.listen('MessageCreated', function(e) {
+                const msg = e.message || e;
+                const isMe = msg.sender_id === {{ auth()->id() }};
+                const wrapper = document.createElement('div');
+                wrapper.className = 'mb-3 ' + (isMe ? 'text-right' : 'text-left');
+
+                const bubble = document.createElement('div');
+                bubble.className = 'inline-block px-3 py-2 rounded-lg ' + (isMe ? 'bg-black text-white' : 'bg-white border border-gray-200 text-gray-900');
+                bubble.style.maxWidth = '80%';
+
+                const p = document.createElement('p');
+                p.className = 'text-sm';
+                p.textContent = msg.body || msg.message?.body || '';
+
+                const t = document.createElement('p');
+                t.className = 'text-[10px] mt-1 opacity-70';
+                t.textContent = new Date(msg.created_at).toLocaleString();
+
+                bubble.appendChild(p);
+                bubble.appendChild(t);
+                wrapper.appendChild(bubble);
+
+                box.appendChild(wrapper);
+                box.scrollTop = box.scrollHeight;
+            });
+        })();
+    </script>
 </x-app-layout>
 
 

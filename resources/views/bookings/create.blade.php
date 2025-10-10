@@ -254,6 +254,7 @@
 
             // Slot interval and timezone hints
             const SLOT_INTERVAL = Number(@json($slotInterval ?? 30));
+                const duration = Number(@json($serviceDuration ?? 0));
             const PROVIDER_TZ = @json($providerTz ?? config('app.timezone'));
             const CUSTOMER_TZ = @json($customerTz ?? config('app.timezone'));
 
@@ -325,7 +326,8 @@
                 const booked = getBookedTimesForDate(dateValue);
                 const step = SLOT_INTERVAL; // minutes
                 let added = 0;
-                for (let m = startM; m <= endM; m += step) {
+                    // ensure the entire service duration fits before the availability end
+                    for (let m = startM; m + duration <= endM; m += step) {
                     const t = minutesToTime(m);
                     if (booked.has(t)) continue;
                     const opt = document.createElement('option');
@@ -368,8 +370,10 @@
             }
 
             if (dateInput) {
-                // set min to today
-                dateInput.setAttribute('min', new Date().toISOString().slice(0,10));
+                // set min to today (local date to avoid timezone shift issues)
+                const nowLocal = new Date();
+                const todayLocal = nowLocal.getFullYear() + '-' + String(nowLocal.getMonth()+1).padStart(2,'0') + '-' + String(nowLocal.getDate()).padStart(2,'0');
+                dateInput.setAttribute('min', todayLocal);
                 dateInput.addEventListener('change', function() {
                     populateTimeOptionsForDate(dateInput.value);
                 });
@@ -438,12 +442,14 @@
                     cell.type = 'button';
                     cell.className = 'p-2 rounded hover:bg-gray-100';
                     const dateObj = new Date(year, month, d);
-                    const iso = dateObj.toISOString().slice(0,10);
+                        // build a local-date YYYY-MM-DD to avoid timezone shifts from toISOString
+                        const iso = dateObj.getFullYear() + '-' + String(dateObj.getMonth() + 1).padStart(2, '0') + '-' + String(dateObj.getDate()).padStart(2, '0');
                     cell.dataset.iso = iso;
                     cell.textContent = d;
 
                     // Disable past dates
-                    const todayIso = new Date().toISOString().slice(0,10);
+                    const nowLocal = new Date();
+                    const todayIso = nowLocal.getFullYear() + '-' + String(nowLocal.getMonth() + 1).padStart(2, '0') + '-' + String(nowLocal.getDate()).padStart(2, '0');
                     if (iso < todayIso) {
                         cell.disabled = true;
                         cell.classList.add('text-gray-300');

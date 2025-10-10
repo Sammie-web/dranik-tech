@@ -16,13 +16,14 @@ class Message extends Model
         'body',
         'read_at',
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'read_at' => 'datetime',
-        ];
-    }
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'read_at' => 'datetime',
+    ];
 
     public function booking()
     {

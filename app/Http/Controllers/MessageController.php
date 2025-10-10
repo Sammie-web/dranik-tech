@@ -47,14 +47,28 @@ class MessageController extends Controller
 
         $receiverId = $booking->customer_id === $user->id ? $booking->provider_id : $booking->customer_id;
 
-        Message::create([
+        $message = Message::create([
             'booking_id' => $booking->id,
             'sender_id' => $user->id,
             'receiver_id' => $receiverId,
             'body' => $request->body,
         ]);
 
-        return redirect()->route('chat.thread', $booking);
+        // Broadcast the new message to the booking channel
+        event(new \App\Events\MessageCreated($message));
+
+        // Send email notification to the receiver (queued if queue is configured)
+        try {
+            \Mail::to($message->receiver)->queue(new \App\Mail\NewMessageNotification($message));
+        } catch (\Exception $e) {
+            \Log::error('Failed to queue new message email', ['error' => $e->getMessage()]);
+        }
+
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'sent', 'data' => $message], 201);
+        }
+
+        return redirect()->route('chat.thread', $booking)->with('success', 'Message sent');
     }
 }
 

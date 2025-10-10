@@ -25,16 +25,18 @@ class Payment extends Model
         'paid_at',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'amount' => 'decimal:2',
-            'commission' => 'decimal:2',
-            'provider_amount' => 'decimal:2',
-            'gateway_response' => 'array',
-            'paid_at' => 'datetime',
-        ];
-    }
+    /**
+     * Attribute casting for Eloquent.
+     *
+     * @var array<string,string>
+     */
+    protected $casts = [
+        'amount' => 'decimal:2',
+        'commission' => 'decimal:2',
+        'provider_amount' => 'decimal:2',
+        'gateway_response' => 'array',
+        'paid_at' => 'datetime',
+    ];
 
     protected static function boot()
     {

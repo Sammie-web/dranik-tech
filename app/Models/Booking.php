@@ -26,16 +26,18 @@ class Booking extends Model
         'location_details',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'scheduled_at' => 'datetime',
-            'completed_at' => 'datetime',
-            'amount' => 'decimal:2',
-            'commission' => 'decimal:2',
-            'location_details' => 'array',
-        ];
-    }
+    /**
+     * Attribute casting for Eloquent.
+     *
+     * @var array<string,string>
+     */
+    protected $casts = [
+        'scheduled_at' => 'datetime',
+        'completed_at' => 'datetime',
+        'amount' => 'decimal:2',
+        'commission' => 'decimal:2',
+        'location_details' => 'array',
+    ];
 
     protected static function boot()
     {

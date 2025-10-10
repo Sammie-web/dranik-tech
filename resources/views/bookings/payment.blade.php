@@ -23,7 +23,7 @@
                         <div class="p-6">
                             <h3 class="text-lg font-semibold text-gray-900 mb-6">Choose Payment Method</h3>
                             
-                            <div x-data="{ selectedMethod: 'paystack' }" class="space-y-4">
+                            <div x-data="paymentHandler()" class="space-y-4">
                                 <!-- Paystack -->
                                 <div class="border rounded-lg p-4 cursor-pointer transition-colors duration-200"
                                      :class="{ 'border-black bg-gray-50': selectedMethod === 'paystack', 'border-gray-200': selectedMethod !== 'paystack' }"
@@ -76,7 +76,7 @@
 
                                 <!-- Payment Button -->
                                 <div class="pt-6">
-                                    <form method="POST" :action="getPaymentAction(selectedMethod)" x-ref="paymentForm">
+                                    <form method="POST" :action="getPaymentAction(selectedMethod)" x-ref="paymentForm" x-on:submit.prevent="handleSubmit($event)">
                                         @csrf
                                         <input type="hidden" name="gateway" :value="selectedMethod">
                                         
@@ -200,12 +200,9 @@
     @push('scripts')
     <script>
         function getPaymentAction(method) {
-            if (method === 'cash') {
-                // For cash payments, we'll handle this differently
-                return '{{ route("bookings.show", $booking) }}';
-            }
-            
-            // For online payments, redirect to payment initialization
+            // Always initialize payment on the payments.initialize route. Cash payments
+            // will be handled by the server-side initialization as well (the form
+            // includes gateway=cash). This avoids posting to the current booking URL.
             return '{{ route("payments.initialize", $booking) }}';
         }
 
@@ -215,8 +212,11 @@
                 selectedMethod: 'paystack',
                 
                 getPaymentAction(method) {
+                    // For the Alpine component we return '#' for cash so that the
+                    // submit handler can intercept and ask for confirmation. For
+                    // other gateways return the initialize route.
                     if (method === 'cash') {
-                        return '#'; // We'll handle this with JavaScript
+                        return '#';
                     }
                     return '{{ route("payments.initialize", $booking) }}';
                 },

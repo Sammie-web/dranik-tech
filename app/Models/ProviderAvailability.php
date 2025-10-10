@@ -17,14 +17,17 @@ class ProviderAvailability extends Model
         'is_available',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'start_time' => 'datetime:H:i',
-            'end_time' => 'datetime:H:i',
-            'is_available' => 'boolean',
-        ];
-    }
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string,string>
+     */
+    protected $casts = [
+        // times stored as TIME in DB; keep as string in 'H:i' when accessed
+        'start_time' => 'string',
+        'end_time' => 'string',
+        'is_available' => 'boolean',
+    ];
 
     // Relationships
     public function provider()

@@ -72,6 +72,22 @@ Route::middleware('auth')->group(function () {
         Route::get('/services/{service}/book', [\App\Http\Controllers\BookingController::class, 'create'])->name('bookings.create');
         Route::post('/services/{service}/book', [\App\Http\Controllers\BookingController::class, 'store'])->name('bookings.store');
         Route::get('/bookings/{booking}', [\App\Http\Controllers\BookingController::class, 'show'])->name('bookings.show');
+        // Defensive route: capture accidental POSTs to bookings.show and log them
+        // This prevents MethodNotAllowedHttpException when a client mistakenly
+        // submits a form to the booking page URL. It will log the request and
+        // redirect back with a helpful message.
+        Route::post('/bookings/{booking}', function (\Illuminate\Http\Request $request, $booking) {
+            \Log::warning('Unexpected POST received at /bookings/{booking}', [
+                'booking' => $booking,
+                'uri' => $request->getRequestUri(),
+                'method' => $request->method(),
+                'referer' => $request->headers->get('referer'),
+                'user_id' => auth()->id(),
+                'input_keys' => array_keys($request->all()),
+            ]);
+
+            return redirect()->route('bookings.show', $booking)->with('error', 'Invalid request method for this page. If you were trying to proceed to payment, please use the payment button.');
+        });
         Route::get('/bookings/{booking}/payment', [\App\Http\Controllers\BookingController::class, 'payment'])->name('bookings.payment');
         Route::patch('/bookings/{booking}/cancel', [\App\Http\Controllers\BookingController::class, 'cancel'])->name('bookings.cancel');
         Route::patch('/bookings/{booking}/confirm', [\App\Http\Controllers\BookingController::class, 'confirm'])->name('bookings.confirm');

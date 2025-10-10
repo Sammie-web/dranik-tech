@@ -22,13 +22,15 @@
                                     <div class="w-40 font-medium">{{ ucfirst($day) }}</div>
                                     <div class="flex items-center gap-3">
                                         <label class="flex items-center gap-2">
-                                            <input type="checkbox" name="days[{{ $day }}][is_available]" value="1" {{ $a && $a->is_available ? 'checked' : '' }}>
+                                            {{-- ensure a value is always posted for is_available (0 when unchecked) --}}
+                                            <input type="hidden" name="days[{{ $day }}][is_available]" value="0">
+                                            <input type="checkbox" class="availability-toggle" name="days[{{ $day }}][is_available]" value="1" {{ $a && $a->is_available ? 'checked' : '' }}>
                                             <span class="text-sm">Available</span>
                                         </label>
 
-                                        <input type="time" name="days[{{ $day }}][start_time]" value="{{ $a && $a->start_time ? \Carbon\Carbon::parse($a->start_time)->format('H:i') : '' }}" class="px-2 py-1 border rounded">
+                                        <input type="time" name="days[{{ $day }}][start_time]" value="{{ $a && $a->start_time ? \Carbon\Carbon::parse($a->start_time)->format('H:i') : '' }}" class="px-2 py-1 border rounded start-time">
                                         <span>to</span>
-                                        <input type="time" name="days[{{ $day }}][end_time]" value="{{ $a && $a->end_time ? \Carbon\Carbon::parse($a->end_time)->format('H:i') : '' }}" class="px-2 py-1 border rounded">
+                                        <input type="time" name="days[{{ $day }}][end_time]" value="{{ $a && $a->end_time ? \Carbon\Carbon::parse($a->end_time)->format('H:i') : '' }}" class="px-2 py-1 border rounded end-time">
                                     </div>
                                     <input type="hidden" name="days[{{ $day }}][day]" value="{{ $day }}" />
                                 </div>
@@ -39,6 +41,25 @@
                             <button type="submit" class="px-6 py-2 bg-black text-white rounded">Save Availability</button>
                         </div>
                     </form>
+
+                    @push('scripts')
+                    <script>
+                        (function(){
+                            document.querySelectorAll('.availability-toggle').forEach(function(cb){
+                                const container = cb.closest('.flex');
+                                const start = container.querySelector('.start-time');
+                                const end = container.querySelector('.end-time');
+                                function update() {
+                                    const enabled = cb.checked;
+                                    if (start) start.disabled = !enabled;
+                                    if (end) end.disabled = !enabled;
+                                }
+                                cb.addEventListener('change', update);
+                                update();
+                            });
+                        })();
+                    </script>
+                    @endpush
 
                 </div>
             </div>

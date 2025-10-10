@@ -43,15 +43,30 @@ class BookingController extends Controller
         $customerTz = auth()->user()->timezone ?? config('app.timezone');
 
         // Prepare a simple availability map for JS (avoid closures in Blade)
-        $availabilityMap = $availabilities->mapWithKeys(function ($a, $k) {
-            return [$k => [
-                'is_available' => (bool) $a->is_available,
-                'start_time' => $a->start_time,
-                'end_time' => $a->end_time,
-            ]];
-        })->toArray();
+        $weekDays = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
 
-        return view('bookings.create', compact('service', 'availabilities', 'existingBookings', 'slotInterval', 'providerTz', 'customerTz', 'availabilityMap'));
+        // start with defaults (unavailable)
+        $availabilityMap = array_fill_keys($weekDays, [
+            'is_available' => false,
+            'start_time' => null,
+            'end_time' => null,
+        ]);
+
+        foreach ($availabilities as $a) {
+            $day = strtolower($a->day_of_week);
+            // ensure time strings are 'HH:MM'
+            $start = $a->start_time ? \Carbon\Carbon::parse($a->start_time)->format('H:i') : null;
+            $end = $a->end_time ? \Carbon\Carbon::parse($a->end_time)->format('H:i') : null;
+            $availabilityMap[$day] = [
+                'is_available' => (bool) $a->is_available,
+                'start_time' => $start,
+                'end_time' => $end,
+            ];
+        }
+
+    $serviceDuration = (int) ($service->duration ?? 0);
+
+    return view('bookings.create', compact('service', 'availabilities', 'existingBookings', 'slotInterval', 'providerTz', 'customerTz', 'availabilityMap', 'serviceDuration'));
     }
 
     public function store(Request $request, Service $service)
@@ -121,7 +136,9 @@ class BookingController extends Controller
                 'amount' => $amount,
                 'commission' => $commission,
                 'provider_amount' => $amount - $commission,
-                'gateway' => 'pending', // Will be updated when payment is processed
+                // Use a valid gateway enum placeholder. The actual gateway will be set when the user selects a payment provider.
+                // 'pending' is not a valid enum for the `gateway` column and previously caused an insert failure.
+                'gateway' => 'cash',
                 'status' => 'pending',
             ]);
 
@@ -132,6 +149,13 @@ class BookingController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
+            // Log the exception so we have visibility into the root cause instead of only returning a generic message.
+            \Log::error('Booking::store error: ' . $e->getMessage(), [
+                'exception' => $e,
+                'service_id' => $service->id ?? null,
+                'provider_id' => $service->provider_id ?? null,
+                'customer_id' => auth()->id(),
+            ]);
             return back()->withErrors(['error' => 'Something went wrong. Please try again.']);
         }
     }

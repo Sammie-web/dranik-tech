@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="tf2KFJnTc0yeKfJmERLtlUVU7rFJbQ501NsadRPN">
+        <meta name="csrf-token" content="1KOm4qkFwBQxkgRM8X26NWC3GSeFFNCKTkZPqZvE">
 
         <title>D&#039;RANIK TECHS</title>
 
@@ -42,7 +42,7 @@
                                                                                 </nav>
                     
             <form method="POST" action="http://localhost/logout" class="mt-6 px-4">
-                <input type="hidden" name="_token" value="tf2KFJnTc0yeKfJmERLtlUVU7rFJbQ501NsadRPN" autocomplete="off">                <button type="submit"
+                <input type="hidden" name="_token" value="1KOm4qkFwBQxkgRM8X26NWC3GSeFFNCKTkZPqZvE" autocomplete="off">                <button type="submit"
                     class="w-full block px-3 py-2 mt-2 rounded text-left text-red-700 border border-red-200 hover:bg-red-50 transition">
                     <i data-feather="log-out" class="inline w-4 h-4 mr-2 align-text-bottom"></i> Logout
                 </button>
@@ -100,7 +100,7 @@
                             <a href="http://localhost/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
                                                                                     <div class="border-t border-gray-100"></div>
                             <form method="POST" action="http://localhost/logout">
-                                <input type="hidden" name="_token" value="tf2KFJnTc0yeKfJmERLtlUVU7rFJbQ501NsadRPN" autocomplete="off">                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign Out</button>
+                                <input type="hidden" name="_token" value="1KOm4qkFwBQxkgRM8X26NWC3GSeFFNCKTkZPqZvE" autocomplete="off">                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign Out</button>
                             </form>
                         </div>
                     </div>
@@ -146,7 +146,7 @@
                     <a href="http://localhost/dashboard" class="block px-3 py-2 text-gray-700 hover:text-black hover:bg-gray-50 rounded-md">Dashboard</a>
                     <a href="http://localhost/profile" class="block px-3 py-2 text-gray-700 hover:text-black hover:bg-gray-50 rounded-md">Profile</a>
                                                             <form method="POST" action="http://localhost/logout">
-                        <input type="hidden" name="_token" value="tf2KFJnTc0yeKfJmERLtlUVU7rFJbQ501NsadRPN" autocomplete="off">                        <button type="submit" class="block w-full text-left px-3 py-2 text-gray-700 hover:text-black hover:bg-gray-50 rounded-md">Sign Out</button>
+                        <input type="hidden" name="_token" value="1KOm4qkFwBQxkgRM8X26NWC3GSeFFNCKTkZPqZvE" autocomplete="off">                        <button type="submit" class="block w-full text-left px-3 py-2 text-gray-700 hover:text-black hover:bg-gray-50 rounded-md">Sign Out</button>
                     </form>
                 </div>
             </div>
@@ -203,7 +203,7 @@
                             
                             
                             <form method="POST" action="http://localhost/services/1/book" id="booking-form">
-                                <input type="hidden" name="_token" value="tf2KFJnTc0yeKfJmERLtlUVU7rFJbQ501NsadRPN" autocomplete="off">                                
+                                <input type="hidden" name="_token" value="1KOm4qkFwBQxkgRM8X26NWC3GSeFFNCKTkZPqZvE" autocomplete="off">                                
                                 <!-- Calendar + Time selection -->
                                 <div class="mb-6">
                                     <label class="block text-sm font-medium text-gray-700 mb-3">Select Date</label>
@@ -402,6 +402,7 @@
 
             // Slot interval and timezone hints
             const SLOT_INTERVAL = Number(30);
+                const duration = Number(0);
             const PROVIDER_TZ = "UTC";
             const CUSTOMER_TZ = "UTC";
 
@@ -473,7 +474,8 @@
                 const booked = getBookedTimesForDate(dateValue);
                 const step = SLOT_INTERVAL; // minutes
                 let added = 0;
-                for (let m = startM; m <= endM; m += step) {
+                    // ensure the entire service duration fits before the availability end
+                    for (let m = startM; m + duration <= endM; m += step) {
                     const t = minutesToTime(m);
                     if (booked.has(t)) continue;
                     const opt = document.createElement('option');
@@ -516,8 +518,10 @@
             }
 
             if (dateInput) {
-                // set min to today
-                dateInput.setAttribute('min', new Date().toISOString().slice(0,10));
+                // set min to today (local date to avoid timezone shift issues)
+                const nowLocal = new Date();
+                const todayLocal = nowLocal.getFullYear() + '-' + String(nowLocal.getMonth()+1).padStart(2,'0') + '-' + String(nowLocal.getDate()).padStart(2,'0');
+                dateInput.setAttribute('min', todayLocal);
                 dateInput.addEventListener('change', function() {
                     populateTimeOptionsForDate(dateInput.value);
                 });
@@ -586,12 +590,14 @@
                     cell.type = 'button';
                     cell.className = 'p-2 rounded hover:bg-gray-100';
                     const dateObj = new Date(year, month, d);
-                    const iso = dateObj.toISOString().slice(0,10);
+                        // build a local-date YYYY-MM-DD to avoid timezone shifts from toISOString
+                        const iso = dateObj.getFullYear() + '-' + String(dateObj.getMonth() + 1).padStart(2, '0') + '-' + String(dateObj.getDate()).padStart(2, '0');
                     cell.dataset.iso = iso;
                     cell.textContent = d;
 
                     // Disable past dates
-                    const todayIso = new Date().toISOString().slice(0,10);
+                    const nowLocal = new Date();
+                    const todayIso = nowLocal.getFullYear() + '-' + String(nowLocal.getMonth() + 1).padStart(2, '0') + '-' + String(nowLocal.getDate()).padStart(2, '0');
                     if (iso < todayIso) {
                         cell.disabled = true;
                         cell.classList.add('text-gray-300');
