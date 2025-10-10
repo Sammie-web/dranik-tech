@@ -17,10 +17,10 @@
                         </div>
                         <div class="flex space-x-3">
                             @if(auth()->user()->is_verified)
-                                <a href="#" class="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors duration-200">
+                                <a href="{{ route('provider.manage.services') }}" class="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors duration-200">
                                     Add New Service
                                 </a>
-                                <a href="#" class="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors duration-200">
+                                <a href="{{ route('provider.manage.availability') }}" class="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors duration-200">
                                     Manage Availability
                                 </a>
                             @else

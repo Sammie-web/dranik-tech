@@ -4,12 +4,30 @@
             <!-- Logo -->
             <div class="flex items-center">
                 <a href="{{ route('home') }}" class="flex items-center space-x-2">
-                    <div class="w-8 h-8 bg-black rounded-lg flex items-center justify-center">
-                        <span class="text-white font-bold text-sm">D</span>
-                    </div>
-                    <span class="text-xl font-bold text-gray-900">D'RANIK Techs</span>
+                    @if(!empty($platformSettings['site_logo']))
+                        {{-- Larger responsive logo for better visibility --}}
+                        <img src="{{ asset('storage/' . $platformSettings['site_logo']) }}" alt="Logo" class="w-[48px] h-16 md:w-[24px] md:h-12  rounded-lg">
+                        <span class="text-2xl md:text-3xl font-bold text-gray-900">{{ $platformSettings['site_name'] ?? "D'RANIK Techs" }}</span>
+                    @else
+                        <div class="w-10 h-10 md:w-12 md:h-12 bg-black rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-lg">D</span>
+                        </div>
+                        <span class="text-2xl md:text-3xl font-bold text-gray-900">D'RANIK Techs</span>
+                    @endif
                 </a>
             </div>
+
+            <!-- Mobile hamburger (shows on mobile only) - visible only on public/non-dashboard pages -->
+            @php
+                $route = Route::currentRouteName() ?? '';
+            @endphp
+            @if(Str::startsWith($route, ['dashboard', 'customer.', 'provider.', 'admin.']))
+                <div class="md:hidden ml-3">
+                    <button onclick="window.dispatchEvent(new CustomEvent('toggle-sidebar'))" class="text-gray-700 hover:text-black">
+                        <i data-feather="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            @endif
 
             <!-- Desktop Navigation -->
             <div class="hidden md:flex items-center space-x-8">

@@ -62,5 +62,8 @@
         <script>
             feather.replace();
         </script>
+        
+        {{-- Render any pushed scripts from child views --}}
+        @stack('scripts')
     </body>
 </html>

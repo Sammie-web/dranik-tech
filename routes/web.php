@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\EnsureUserRole;
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -50,15 +51,15 @@ Route::get('/dashboard', function () {
 // Role-specific dashboard routes
 Route::get('/customer/dashboard', function () {
     return view('customer.dashboard');
-})->middleware(['auth', 'verified'])->name('customer.dashboard');
+})->middleware(['auth', 'verified', EnsureUserRole::class . ':customer'])->name('customer.dashboard');
 
 Route::get('/provider/dashboard', function () {
     return view('provider.dashboard');
-})->middleware(['auth', 'verified'])->name('provider.dashboard');
+})->middleware(['auth', 'verified', EnsureUserRole::class . ':provider'])->name('provider.dashboard');
 
 Route::get('/admin/dashboard', function () {
     return view('admin.dashboard');
-})->middleware(['auth', 'verified'])->name('admin.dashboard');
+})->middleware(['auth', 'verified', EnsureUserRole::class . ':admin'])->name('admin.dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -109,9 +110,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/api/notifications/count', [\App\Http\Controllers\NotificationController::class, 'getUnreadCount'])->name('api.notifications.count');
         Route::get('/api/notifications/recent', [\App\Http\Controllers\NotificationController::class, 'getRecent'])->name('api.notifications.recent');
 
-        // Provider routes (still protected by verified middleware)
-        Route::middleware('verified')->group(function () {
-            Route::prefix('provider')->group(function () {
+        // Provider routes (protected by verified + provider role)
+        Route::middleware(['verified', EnsureUserRole::class . ':provider'])->group(function () {
+            Route::prefix('provider')->middleware(EnsureUserRole::class . ':provider')->group(function () {
                 Route::get('/services/active', [\App\Http\Controllers\ProviderController::class, 'activeServices'])->name('provider.services.active');
                 Route::get('/bookings', [\App\Http\Controllers\ProviderController::class, 'allBookings'])->name('provider.bookings');
                 Route::get('/services/pending', [\App\Http\Controllers\ProviderController::class, 'pendingServices'])->name('provider.services.pending');
@@ -122,6 +123,9 @@ Route::middleware('auth')->group(function () {
                 Route::get('/chats', [\App\Http\Controllers\ProviderController::class, 'chatList'])->name('provider.chats');
                 Route::get('/manage/services', [\App\Http\Controllers\ProviderController::class, 'manageServices'])->name('provider.manage.services');
                 Route::get('/manage/categories', [\App\Http\Controllers\ProviderController::class, 'manageCategories'])->name('provider.manage.categories');
+                    // Provider availability management
+                    Route::get('/manage/availability', [\App\Http\Controllers\ProviderController::class, 'manageAvailability'])->name('provider.manage.availability');
+                    Route::post('/manage/availability', [\App\Http\Controllers\ProviderController::class, 'updateAvailability'])->name('provider.manage.availability.update');
             });
         });
 
@@ -130,13 +134,16 @@ Route::middleware('auth')->group(function () {
         Route::post('/bookings/{booking}/chat', [\App\Http\Controllers\MessageController::class, 'send'])->name('chat.send');
     });
 
-    // Admin routes
-    Route::prefix('admin')->group(function () {
+    // Admin routes (restricted to admin role)
+    Route::prefix('admin')->middleware(EnsureUserRole::class . ':admin')->group(function () {
         Route::get('/users', [\App\Http\Controllers\AdminController::class, 'manageUsers'])->name('admin.users');
         Route::delete('/users/{user}', [\App\Http\Controllers\AdminController::class, 'destroyUser'])->name('admin.users.destroy');
         Route::get('/users/{user}/edit', [\App\Http\Controllers\AdminController::class, 'editUser'])->name('admin.users.edit');
         Route::patch('/users/{user}', [\App\Http\Controllers\AdminController::class, 'updateUser'])->name('admin.users.update');
         Route::get('/settings', [\App\Http\Controllers\AdminController::class, 'platformSettings'])->name('admin.settings');
+    // Platform settings managed by PlatformSettingsController
+    Route::get('/platform-settings', [\App\Http\Controllers\Admin\PlatformSettingsController::class, 'index'])->name('admin.platform-settings');
+    Route::post('/platform-settings', [\App\Http\Controllers\Admin\PlatformSettingsController::class, 'update'])->name('admin.platform-settings.update');
         Route::get('/services', [\App\Http\Controllers\AdminController::class, 'manageServices'])->name('admin.services');
         Route::get('/audit', [\App\Http\Controllers\AdminController::class, 'audit'])->name('admin.audit');
         Route::get('/payments', [\App\Http\Controllers\AdminController::class, 'customerPayments'])->name('admin.payments');
@@ -169,3 +176,44 @@ Route::prefix('admin/vendors')->middleware(['auth'])->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+// Temporary debug route to render booking page without auth for troubleshooting
+Route::get('/_debug-booking', function () {
+    $service = \App\Models\Service::first() ?? new \App\Models\Service([
+        'provider_id' => 1,
+        'category_id' => 1,
+        'title' => 'Debug Service',
+        'slug' => 'debug-service',
+        'description' => 'Debug service description',
+        'price' => 1000,
+        'duration' => 60,
+        'is_active' => true,
+    ]);
+
+    $availabilityMap = [
+        'sunday' => ['is_available' => false, 'start_time' => null, 'end_time' => null],
+        'monday' => ['is_available' => true, 'start_time' => '09:00', 'end_time' => '17:00'],
+        'tuesday' => ['is_available' => true, 'start_time' => '09:00', 'end_time' => '17:00'],
+        'wednesday' => ['is_available' => true, 'start_time' => '09:00', 'end_time' => '17:00'],
+        'thursday' => ['is_available' => true, 'start_time' => '09:00', 'end_time' => '17:00'],
+        'friday' => ['is_available' => true, 'start_time' => '09:00', 'end_time' => '17:00'],
+        'saturday' => ['is_available' => false, 'start_time' => null, 'end_time' => null],
+    ];
+
+    // set a fake authenticated user so Blade's auth()->user() references don't fail
+    $user = new \App\Models\User([
+        'id' => 999999,
+        'name' => 'Debug User',
+        'email' => 'debug@example.test',
+    ]);
+    // give the fake user a phone property used in the view (not persisted)
+    $user->phone = '0000000000';
+    auth()->setUser($user);
+
+    $existingBookings = [];
+    $slotInterval = 30;
+    $providerTz = config('app.timezone');
+    $customerTz = config('app.timezone');
+
+    return view('bookings.create', compact('service','availabilityMap','existingBookings','slotInterval','providerTz','customerTz'));
+});

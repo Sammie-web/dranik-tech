@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
-@section('title', 'About Us - D\'RANiK Techs')
-@section('description', 'Learn about D\'RANiK Techs, Africa\'s leading service marketplace connecting customers with verified service providers across multiple categories.')
+@section('title', 'About Us - D\'RANIK Techs')
+@section('description', 'Learn about D\'RANIK Techs, Africa\'s leading service marketplace connecting customers with verified service providers across multiple categories.')
 
 @section('content')
 <div class="bg-white">
@@ -11,7 +11,7 @@
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
             <div class="text-center">
                 <h1 class="text-4xl md:text-6xl font-bold text-white mb-6">
-                    About D'RANiK Techs
+                    About D'RANIK Techs
                 </h1>
                 <p class="text-xl text-gray-300 max-w-3xl mx-auto">
                     Connecting Africa through trusted service relationships. We're building the future of service marketplaces across the continent.
@@ -27,7 +27,7 @@
                 <div>
                     <h2 class="text-3xl font-bold text-gray-900 mb-6">Our Mission</h2>
                     <p class="text-lg text-gray-700 mb-6">
-                        At D'RANiK Techs, we believe everyone deserves access to reliable, high-quality services. Our mission is to create a trusted marketplace that connects customers with verified service providers across Africa, making it easier than ever to find and book the services you need.
+                        At D'RANIK Techs, we believe everyone deserves access to reliable, high-quality services. Our mission is to create a trusted marketplace that connects customers with verified service providers across Africa, making it easier than ever to find and book the services you need.
                     </p>
                     <p class="text-lg text-gray-700 mb-6">
                         We're not just a platform – we're a community built on trust, quality, and mutual success. Every interaction on our platform is designed to create value for both customers and service providers.
@@ -205,7 +205,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-3xl font-bold text-white mb-4">Ready to Get Started?</h2>
             <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-                Join thousands of customers and service providers who trust D'RANiK Techs for their service needs.
+                Join thousands of customers and service providers who trust D'RANIK Techs for their service needs.
             </p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="{{ route('services.index') }}" 

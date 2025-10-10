@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
-@section('title', 'Terms of Service - D\'RANiK Techs')
-@section('description', 'Read our Terms of Service to understand the rules and guidelines for using D\'RANiK Techs service marketplace platform.')
+@section('title', 'Terms of Service - D\'RANIK Techs')
+@section('description', 'Read our Terms of Service to understand the rules and guidelines for using D\'RANIK Techs service marketplace platform.')
 
 @section('content')
 <div class="bg-white">
@@ -26,7 +26,7 @@
                 <div class="mb-12">
                     <h2 class="text-2xl font-bold text-gray-900 mb-4">1. Introduction</h2>
                     <p class="text-gray-700 mb-4">
-                        Welcome to D'RANiK Techs ("we," "our," or "us"). These Terms of Service ("Terms") govern your use of our website and mobile application (collectively, the "Platform") that connects customers with service providers.
+                        Welcome to D'RANIK Techs ("we," "our," or "us"). These Terms of Service ("Terms") govern your use of our website and mobile application (collectively, the "Platform") that connects customers with service providers.
                     </p>
                     <p class="text-gray-700 mb-4">
                         By accessing or using our Platform, you agree to be bound by these Terms. If you disagree with any part of these terms, then you may not access the Platform.
@@ -37,7 +37,7 @@
                 <div class="mb-12">
                     <h2 class="text-2xl font-bold text-gray-900 mb-4">2. Definitions</h2>
                     <ul class="space-y-3 text-gray-700">
-                        <li><strong>"Platform"</strong> refers to the D'RANiK Techs website, mobile application, and related services.</li>
+                        <li><strong>"Platform"</strong> refers to the D'RANIK Techs website, mobile application, and related services.</li>
                         <li><strong>"User"</strong> refers to any person who accesses or uses the Platform.</li>
                         <li><strong>"Customer"</strong> refers to a User who books services through the Platform.</li>
                         <li><strong>"Provider"</strong> refers to a User who offers services through the Platform.</li>
@@ -128,7 +128,7 @@
                 <div class="mb-12">
                     <h2 class="text-2xl font-bold text-gray-900 mb-4">7. Intellectual Property</h2>
                     <p class="text-gray-700 mb-4">
-                        The Platform and its original content, features, and functionality are owned by D'RANiK Techs and are protected by international copyright, trademark, patent, trade secret, and other intellectual property laws.
+                        The Platform and its original content, features, and functionality are owned by D'RANIK Techs and are protected by international copyright, trademark, patent, trade secret, and other intellectual property laws.
                     </p>
                 </div>
 
@@ -155,7 +155,7 @@
                 <div class="mb-12">
                     <h2 class="text-2xl font-bold text-gray-900 mb-4">10. Limitation of Liability</h2>
                     <p class="text-gray-700 mb-4">
-                        In no event shall D'RANiK Techs be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses.
+                        In no event shall D'RANIK Techs be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses.
                     </p>
                 </div>
 
@@ -163,7 +163,7 @@
                 <div class="mb-12">
                     <h2 class="text-2xl font-bold text-gray-900 mb-4">11. Indemnification</h2>
                     <p class="text-gray-700 mb-4">
-                        You agree to defend, indemnify, and hold harmless D'RANiK Techs from and against any claims, damages, obligations, losses, liabilities, costs, or debt, and expenses (including attorney's fees) arising from your use of the Platform.
+                        You agree to defend, indemnify, and hold harmless D'RANIK Techs from and against any claims, damages, obligations, losses, liabilities, costs, or debt, and expenses (including attorney's fees) arising from your use of the Platform.
                     </p>
                 </div>
 
@@ -191,7 +191,7 @@
                     </p>
                     <div class="bg-gray-50 p-6 rounded-lg">
                         <p class="text-gray-700">
-                            <strong>D'RANiK Techs</strong><br>
+                            <strong>D'RANIK Techs</strong><br>
                             Email: legal@draniktech.com<br>
                             Phone: +234 801 234 5678<br>
                             Address: 123 Innovation Drive, Victoria Island, Lagos, Nigeria

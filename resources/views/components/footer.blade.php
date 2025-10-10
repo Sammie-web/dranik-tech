@@ -4,10 +4,20 @@
             <!-- Company Info -->
             <div class="col-span-1 lg:col-span-2">
                 <div class="flex items-center space-x-2 mb-4">
-                    <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
+                    {{-- <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
                         <span class="text-black font-bold text-sm">D</span>
                     </div>
-                    <span class="text-xl font-bold">D'RANIK Techs</span>
+                    <span class="text-xl font-bold">D'RANIK Techs</span> --}}
+                    @if(!empty($platformSettings['site_logo']))
+                        {{-- Larger responsive logo for better visibility --}}
+                        <img src="{{ asset('storage/' . $platformSettings['site_logo']) }}" alt="Logo" class="w-[48px] h-16 md:w-[24px] md:h-12  rounded-lg">
+                        <span class="text-2xl md:text-3xl font-bold text-white">{{ $platformSettings['site_name'] ?? "D'RANIK Techs" }}</span>
+                    @else
+                        <div class="w-10 h-10 md:w-12 md:h-12 bg-black rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-lg">D</span>
+                        </div>
+                        <span class="text-2xl md:text-3xl font-bold text-white">D'RANIK Techs</span>
+                    @endif
                 </div>
                 <p class="text-gray-300 mb-4 max-w-md">
                     Your trusted digital service booking platform connecting customers with verified service providers across Africa. Quality services, trusted professionals, seamless booking.

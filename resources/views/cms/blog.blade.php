@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
-@section('title', 'Blog - D\'RANiK Techs')
-@section('description', 'Read the latest insights, tips, and updates from D\'RANiK Techs about the service marketplace industry.')
+@section('title', 'Blog - D\'RANIK Techs')
+@section('description', 'Read the latest insights, tips, and updates from D\'RANIK Techs about the service marketplace industry.')
 
 @section('content')
 <div class="bg-white">
@@ -10,7 +10,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center">
                 <h1 class="text-4xl md:text-5xl font-bold text-white mb-6">
-                    D'RANiK Techs Blog
+                    D'RANIK Techs Blog
                 </h1>
                 <p class="text-xl text-gray-300 max-w-2xl mx-auto">
                     Insights, tips, and stories from the world of service marketplaces. Stay updated with the latest trends and best practices.

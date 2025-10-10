@@ -209,13 +209,13 @@ class NotificationService
     public function sendWelcomeNotification(User $user)
     {
         $message = $user->isProvider() 
-            ? "Welcome to D'RANiK Techs! Start by adding your services and setting your availability."
-            : "Welcome to D'RANiK Techs! Discover amazing services from verified providers in your area.";
+            ? "Welcome to D'RANIK Techs! Start by adding your services and setting your availability."
+            : "Welcome to D'RANIK Techs! Discover amazing services from verified providers in your area.";
 
-        $this->createNotification(
+            $this->createNotification(
             $user,
             'welcome',
-            'Welcome to D\'RANiK Techs!',
+            'Welcome to D\'RANIK Techs!',
             $message,
             [
                 'user_type' => $user->role,

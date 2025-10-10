@@ -4,9 +4,9 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <meta name="description" content="@yield('description', 'D\'RANIK Techs - Your trusted digital service booking platform across Africa')">
+    <meta name="description" content="@yield('description', $platformSettings['site_name'] ?? 'D\'RANIK Techs - Your trusted digital service booking platform across Africa')">
 
-        <title>@yield('title', 'D\'RANIK Techs - Digital Service Booking Platform')</title>
+    <title>@yield('title', ($platformSettings['site_name'] ?? "D'RANIK Techs") . ' - Digital Service Booking Platform')</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,6 +14,9 @@
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         
         <!-- Feather Icons -->
+        @if(!empty($platformSettings['site_favicon']))
+            <link rel="icon" type="image/png" href="{{ asset('storage/' . $platformSettings['site_favicon']) }}">
+        @endif
         <script src="https://unpkg.com/feather-icons"></script>
 
         <!-- Scripts -->

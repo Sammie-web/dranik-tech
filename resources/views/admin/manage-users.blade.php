@@ -9,6 +9,16 @@
                     @if(session('success'))
                         <div class="mb-4 p-3 bg-green-100 text-green-800 rounded">{{ session('success') }}</div>
                     @endif
+                    <div class="mb-4">
+                        <form id="users-search-form" method="GET" action="{{ route('admin.users') }}" class="flex gap-2">
+                            <input id="users-search" type="text" name="q" value="{{ $query ?? '' }}" placeholder="Search users by name, email or role..." class="w-full px-3 py-2 border border-gray-300 rounded" autocomplete="off" />
+                            <button type="submit" id="users-search-button" class="px-4 py-2 bg-black text-white rounded">Search</button>
+                            @if(!empty($query))
+                                <a href="{{ route('admin.users') }}" id="users-search-clear" class="px-4 py-2 border rounded">Clear</a>
+                            @endif
+                        </form>
+                    </div>
+
                     <div id="users-table">
                         <div class="hidden md:block">
                             <table class="min-w-full divide-y divide-gray-200">
@@ -74,11 +84,9 @@
         </div>
     </div>
     <script>
-        document.addEventListener('click', function(e) {
-            const anchor = e.target.closest('#users-table .pagination a');
-            if (anchor) {
-                e.preventDefault();
-                const url = anchor.getAttribute('href');
+        (function(){
+            // helper to replace table by fetching url and swapping #users-table
+            function fetchAndReplace(url) {
                 fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' }})
                     .then(r => r.text())
                     .then(html => {
@@ -93,7 +101,46 @@
                         }
                     });
             }
-        });
+
+            // Pagination click handler (delegated)
+            document.addEventListener('click', function(e) {
+                const anchor = e.target.closest('#users-table .pagination a');
+                if (anchor) {
+                    e.preventDefault();
+                    const url = anchor.getAttribute('href');
+                    fetchAndReplace(url);
+                }
+            });
+
+            // Debounced live search
+            const searchInput = document.getElementById('users-search');
+            const searchForm = document.getElementById('users-search-form');
+
+            function debounce(fn, delay) {
+                let t;
+                return function(...args) {
+                    clearTimeout(t);
+                    t = setTimeout(() => fn.apply(this, args), delay);
+                };
+            }
+
+            if (searchInput && searchForm) {
+                const doSearch = debounce(function() {
+                    const q = searchInput.value.trim();
+                    const url = new URL(searchForm.action, window.location.origin);
+                    if (q) url.searchParams.set('q', q); else url.searchParams.delete('q');
+                    fetchAndReplace(url.toString());
+                }, 400);
+
+                searchInput.addEventListener('input', doSearch);
+
+                // submit form fallback
+                searchForm.addEventListener('submit', function(e){
+                    e.preventDefault();
+                    doSearch();
+                });
+            }
+        })();
     </script>
 </x-app-layout>
 

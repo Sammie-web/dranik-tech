@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
-@section('title', 'Help & FAQ - D\'RANiK Techs')
-@section('description', 'Find answers to frequently asked questions about using D\'RANiK Techs service marketplace platform.')
+@section('title', 'Help & FAQ - D\'RANIK Techs')
+@section('description', 'Find answers to frequently asked questions about using D\'RANIK Techs service marketplace platform.')
 
 @section('content')
 <div class="bg-white">
@@ -13,7 +13,7 @@
                     Help Center
                 </h1>
                 <p class="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
-                    Find answers to common questions and get the help you need to make the most of D'RANiK Techs.
+                    Find answers to common questions and get the help you need to make the most of D'RANIK Techs.
                 </p>
                 
                 <!-- Search Bar -->

@@ -9,7 +9,7 @@
             <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
                 <div>
                     <h3 class="text-2xl font-bold text-gray-900">Admin Dashboard</h3>
-                    <p class="text-gray-600 mt-1">Manage the D'RANiK Techs platform</p>
+                    <p class="text-gray-600 mt-1">Manage the D'RANIK Techs platform</p>
                 </div>
                 <div class="flex gap-2">
                     <a href="{{ route('admin.users') }}" class="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition">Manage Users</a>

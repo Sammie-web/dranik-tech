@@ -35,11 +35,32 @@ class BookingController extends Controller
             })
             ->toArray();
 
-        return view('bookings.create', compact('service', 'availabilities', 'existingBookings'));
+        // Slot interval (minutes) - allow platform or provider override later
+        $slotInterval = config('app.slot_interval', 30);
+
+        // Timezone hints: provider may have timezone attribute, fall back to app timezone
+        $providerTz = $service->provider->timezone ?? config('app.timezone');
+        $customerTz = auth()->user()->timezone ?? config('app.timezone');
+
+        // Prepare a simple availability map for JS (avoid closures in Blade)
+        $availabilityMap = $availabilities->mapWithKeys(function ($a, $k) {
+            return [$k => [
+                'is_available' => (bool) $a->is_available,
+                'start_time' => $a->start_time,
+                'end_time' => $a->end_time,
+            ]];
+        })->toArray();
+
+        return view('bookings.create', compact('service', 'availabilities', 'existingBookings', 'slotInterval', 'providerTz', 'customerTz', 'availabilityMap'));
     }
 
     public function store(Request $request, Service $service)
     {
+        // If the client sent scheduled_date and scheduled_time separately, merge them into scheduled_at
+        if (!$request->filled('scheduled_at') && $request->filled('scheduled_date') && $request->filled('scheduled_time')) {
+            $request->merge(['scheduled_at' => $request->input('scheduled_date') . ' ' . $request->input('scheduled_time')]);
+        }
+
         $request->validate([
             'scheduled_at' => 'required|date|after:now',
             'customer_notes' => 'nullable|string|max:500',

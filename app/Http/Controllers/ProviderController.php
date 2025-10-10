@@ -88,8 +88,14 @@ class ProviderController extends Controller
     public function manageServices()
     {
         $this->ensureProvider();
-        $services = auth()->user()->providedServices()->with('category')->latest()->paginate(12);
-        return view('provider.manage-services', compact('services'));
+        $provider = auth()->user();
+        $services = $provider->providedServices()->with('category')->latest()->paginate(12);
+
+        // Load provider availabilities to show a quick summary on the services page
+        $availabilities = $provider->availabilities()->get()->keyBy('day_of_week');
+        $hasAvailability = $availabilities->filter(function($a){ return $a->is_available; })->count() > 0;
+
+        return view('provider.manage-services', compact('services', 'availabilities', 'hasAvailability'));
     }
 
     public function manageCategories()
@@ -97,6 +103,42 @@ class ProviderController extends Controller
         $this->ensureProvider();
         // Show categories and mapping for provider services
         return view('provider.manage-categories');
+    }
+
+    public function manageAvailability()
+    {
+        $this->ensureProvider();
+        $provider = auth()->user();
+        $availabilities = $provider->availabilities()->get()->keyBy('day_of_week');
+        // Days of week order
+        $days = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+        return view('provider.manage-availability', compact('availabilities','days'));
+    }
+
+    public function updateAvailability(Request $request)
+    {
+        $this->ensureProvider();
+        $provider = auth()->user();
+
+        $data = $request->validate([
+            'days' => 'required|array',
+            'days.*.day' => 'required|string',
+            'days.*.is_available' => 'sometimes|boolean',
+            'days.*.start_time' => 'nullable|date_format:H:i',
+            'days.*.end_time' => 'nullable|date_format:H:i',
+        ]);
+
+        foreach ($data['days'] as $dayItem) {
+            $day = $dayItem['day'];
+            $availability = $provider->availabilities()->firstOrNew(['day_of_week' => $day]);
+            $availability->start_time = $dayItem['start_time'] ?? null;
+            $availability->end_time = $dayItem['end_time'] ?? null;
+            $availability->is_available = !empty($dayItem['is_available']);
+            $availability->provider_id = $provider->id;
+            $availability->save();
+        }
+
+        return back()->with('success', 'Availability updated');
     }
 }
 

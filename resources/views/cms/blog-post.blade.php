@@ -77,7 +77,7 @@
 
                 <h2 class="text-2xl font-bold text-gray-900 mt-12 mb-6">2. Research and Compare Options</h2>
                 <p class="mb-6">
-                    Don't settle for the first provider you find. Use platforms like D'RANiK Techs to compare multiple providers in your area. Look at their profiles, services offered, pricing, and availability. This comparison will give you a better understanding of the market and help you make an informed decision.
+                    Don't settle for the first provider you find. Use platforms like D'RANIK Techs to compare multiple providers in your area. Look at their profiles, services offered, pricing, and availability. This comparison will give you a better understanding of the market and help you make an informed decision.
                 </p>
 
                 <div class="bg-blue-50 border-l-4 border-blue-500 p-6 my-8">
@@ -99,7 +99,7 @@
 
                 <h2 class="text-2xl font-bold text-gray-900 mt-12 mb-6">4. Verify Credentials and Insurance</h2>
                 <p class="mb-6">
-                    Ensure that your chosen provider has the necessary licenses, certifications, and insurance coverage for their services. This protects both you and the provider in case of accidents or damages. Reputable platforms like D'RANiK Techs verify these credentials as part of their provider onboarding process.
+                    Ensure that your chosen provider has the necessary licenses, certifications, and insurance coverage for their services. This protects both you and the provider in case of accidents or damages. Reputable platforms like D'RANIK Techs verify these credentials as part of their provider onboarding process.
                 </p>
 
                 <h2 class="text-2xl font-bold text-gray-900 mt-12 mb-6">5. Communicate Clearly</h2>
@@ -135,7 +135,7 @@
 
                 <h2 class="text-2xl font-bold text-gray-900 mt-12 mb-6">Conclusion</h2>
                 <p class="mb-6">
-                    Choosing the right home service provider doesn't have to be overwhelming. By following these tips and using trusted platforms like D'RANiK Techs, you can find reliable, professional providers who will deliver quality service. Remember, taking time to research and compare options upfront will save you time and ensure satisfaction with the final results.
+                    Choosing the right home service provider doesn't have to be overwhelming. By following these tips and using trusted platforms like D'RANIK Techs, you can find reliable, professional providers who will deliver quality service. Remember, taking time to research and compare options upfront will save you time and ensure satisfaction with the final results.
                 </p>
 
                 <p class="text-lg font-medium text-gray-900 mt-8">

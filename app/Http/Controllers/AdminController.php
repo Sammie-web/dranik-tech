@@ -26,8 +26,20 @@ class AdminController extends Controller
     public function manageUsers()
     {
         $this->ensureAdmin();
-        $users = User::latest()->paginate(15);
-        return view('admin.manage-users', compact('users'));
+        $query = request()->input('q');
+
+        $usersQuery = User::query();
+
+        if ($query) {
+            $usersQuery->where(function($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%")
+                  ->orWhere('email', 'like', "%{$query}%")
+                  ->orWhere('role', 'like', "%{$query}%");
+            });
+        }
+
+        $users = $usersQuery->latest()->paginate(15)->appends(['q' => $query]);
+        return view('admin.manage-users', compact('users', 'query'));
     }
 
     public function destroyUser(User $user)

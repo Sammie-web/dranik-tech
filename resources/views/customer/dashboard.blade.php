@@ -15,12 +15,13 @@
                             <h3 class="text-2xl font-bold text-gray-900">Welcome back, {{ auth()->user()->name }}!</h3>
                             <p class="text-gray-600 mt-1">Manage your bookings and discover new services</p>
                         </div>
-                        <div class="text-right">
-                            <a href="{{ route('services.index') }}" class="bg-black text-white px-6 py-3 rounded-lg hover:bg-gray-800 transition-colors duration-200">
+                        
+                    </div>
+                    <div class="text-right">
+                            <a href="{{ route('services.index') }}" class="bg-black text-white px-6 py-2 rounded-lg hover:bg-gray-800 transition">
                                 Browse Services
                             </a>
                         </div>
-                    </div>
                 </div>
             </div>
 

@@ -6,8 +6,22 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Your Services</h3>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Your Services</h3>
+                        <div>
+                            @if(!empty($hasAvailability))
+                                <span class="text-sm px-3 py-1 bg-green-100 text-green-800 rounded">Availability configured</span>
+                            @else
+                                <a href="{{ route('provider.manage.availability') }}" class="text-sm px-3 py-1 bg-yellow-100 text-yellow-800 rounded">Set Availability</a>
+                            @endif
+                        </div>
+                    </div>
                     @if($services->count())
+                            @if(empty($hasAvailability))
+                                <div class="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded">
+                                    <p class="text-sm text-yellow-800">You haven't configured your availability yet. It's recommended to <a href="{{ route('provider.manage.availability') }}" class="underline">set your availability</a> so customers can schedule properly.</p>
+                                </div>
+                            @endif
                         <div class="space-y-3">
                             @foreach($services as $service)
                                 <div class="flex items-center justify-between p-4 border border-gray-200 rounded">

@@ -5,9 +5,8 @@
 
 @section('content')
     <!-- Hero Section -->
-    {{-- bg-gray-900 --}}
-    <section class="relative bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white overflow-hidden">
-        <div class="absolute inset-0 bg-black opacity-50"></div>
+    <section class="relative bg-theme-teal text-white overflow-hidden">
+        <div class="absolute inset-0 bg-black opacity-10"></div>
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div class="animate-fade-in">
@@ -134,11 +133,11 @@
         </div>
     </section>
 
-    <!-- Why Choose D'RANiK Techs (Trust & Security Block) -->
+    <!-- Why Choose D'RANIK Techs (Trust & Security Block) -->
     <section class="py-16 bg-gray-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-8">
-                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Why Choose D’RANiK Techs</h2>
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Why Choose D’RANIK Techs</h2>
                 <p class="text-lg text-gray-600 max-w-2xl mx-auto">Trust, security and a wide network of verified
                     professionals across Africa.</p>
             </div>
@@ -326,7 +325,7 @@
     <section class="py-16 bg-black text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to Get Started?</h2>
-            <p class="text-xl text-gray-100 mb-8 max-w-2xl mx-auto">Join thousands of satisfied customers who trust D'RANiK
+            <p class="text-xl text-gray-100 mb-8 max-w-2xl mx-auto">Join thousands of satisfied customers who trust D'RANIK
                 Techs for their service needs.</p>
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <a href="{{ route('register') }}"

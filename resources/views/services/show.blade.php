@@ -220,13 +220,28 @@
                         <a href="{{ route('bookings.create', $service) }}" class="block w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors duration-200 mb-4 text-center">
                             Book Now
                         </a>
-                        <a href="{{ auth()->check() ? route('chat.thread', optional(auth()->user()->customerBookings()->where('provider_id',$service->provider_id)->latest()->first())->booking ?? $service->bookings()->where('customer_id', auth()->id())->latest()->first()) : '#' }}" 
-                           @if(!auth()->check() || !$service->bookings()->where('customer_id', auth()->id())->exists())
-                               onclick="event.preventDefault(); alert('You need a booking with this provider to start a chat. Please book the service first.');"
-                           @endif
-                           class="block w-full text-center border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors duration-200">
-                            Contact Provider
-                        </a>
+
+                        @php
+                            // Determine if the authenticated user already has a booking with this provider
+                            $chatBooking = null;
+                            if (auth()->check()) {
+                                $chatBooking = auth()->user()->customerBookings()->where('provider_id', $service->provider_id)->latest()->first();
+                                if (!$chatBooking) {
+                                    $chatBooking = $service->bookings()->where('customer_id', auth()->id())->latest()->first();
+                                }
+                            }
+                        @endphp
+
+                        @if(auth()->check() && $chatBooking)
+                            <a href="{{ route('chat.thread', $chatBooking) }}" class="block w-full text-center border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors duration-200">
+                                Contact Provider
+                            </a>
+                        @else
+                            <a href="#" onclick="event.preventDefault(); alert('You need a booking with this provider to start a chat. Please book the service first.');" class="block w-full text-center border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors duration-200">
+                                Contact Provider
+                            </a>
+                        @endif
+
                     @else
                         <a href="{{ route('login') }}" class="block w-full bg-black text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors duration-200 text-center mb-4">
                             Sign In to Book

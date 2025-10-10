@@ -1,4 +1,5 @@
-<aside x-data="{ open: false }" class="z-40 md:fixed md:top-0 md:left-0 md:h-screen md:w-64 md:z-50">
+<aside x-data="{ open: false }" @toggle-sidebar.window="open = !open"
+    class="z-40 md:fixed md:top-0 md:left-0 md:h-screen md:w-64 md:z-50">
     <!-- Hamburger for mobile -->
     {{-- <div class="md:hidden flex items-center p-5 bg-white border-b border-gray-200">
         <button @click="open = !open" class="text-gray-700 focus:outline-none">
@@ -30,6 +31,8 @@
                     <a href="{{ route('bookings.history') }}"
                         class="block px-3 py-2 rounded {{ request()->routeIs('bookings.history') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">My
                         Bookings</a>
+                    <a href="{{ route('profile.edit') }}"
+                        class="block px-3 py-2 rounded {{ request()->routeIs('profile.edit') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">Profile</a>
                 @endif
                 @if(Auth::user()->isProvider())
                     <a href="{{ route('provider.services.active') }}"
@@ -47,6 +50,8 @@
                     <a href="{{ route('provider.manage.categories') }}"
                         class="block px-3 py-2 rounded {{ request()->routeIs('provider.manage.categories') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">Manage
                         Categories</a>
+                    <a href="{{ route('profile.edit') }}"
+                        class="block px-3 py-2 rounded {{ request()->routeIs('profile.edit') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">Profile</a>
                 @endif
                 @if(Auth::user()->isAdmin())
                     <a href="{{ route('admin.users') }}"
@@ -65,10 +70,24 @@
                         class="block px-3 py-2 rounded {{ request()->routeIs('admin.commissions') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">Commissions</a>
                     <a href="{{ route('admin.gateways') }}"
                         class="block px-3 py-2 rounded {{ request()->routeIs('admin.gateways') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">Gateways</a>
+                    <a href="{{ route('admin.platform-settings') }}"
+                        class="block px-3 py-2 rounded {{ request()->routeIs('admin.platform-settings') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">Platform Settings</a>
+                    <a href="{{ route('profile.edit') }}"
+                        class="block px-3 py-2 rounded {{ request()->routeIs('profile.edit') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">Profile</a>
                 @endif
             @endauth
         </nav>
         @auth
+            @if(session('impersonator_id'))
+                <form method="POST" action="{{ route('admin.stop-impersonation') }}" class="mt-6 px-4">
+                    @csrf
+                    <button type="submit" class="w-full block px-3 py-2 mt-2 rounded text-left bg-theme-brightBlue text-white hover:bg-theme-brightBlue/90 transition">
+                        <i data-feather="corner-up-left" class="inline w-4 h-4 mr-2 align-text-bottom"></i>
+                        Stop Impersonation
+                    </button>
+                </form>
+            @endif
+
             <form method="POST" action="{{ route('logout') }}" class="mt-6 px-4">
                 @csrf
                 <button type="submit"

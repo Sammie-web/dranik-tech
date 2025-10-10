@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
-@section('title', 'Privacy Policy - D\'RANiK Techs')
-@section('description', 'Learn how D\'RANiK Techs protects your privacy and handles your personal information on our service marketplace platform.')
+@section('title', 'Privacy Policy - D\'RANIK Techs')
+@section('description', 'Learn how D\'RANIK Techs protects your privacy and handles your personal information on our service marketplace platform.')
 
 @section('content')
 <div class="bg-white">
@@ -26,7 +26,7 @@
                 <div class="mb-12">
                     <h2 class="text-2xl font-bold text-gray-900 mb-4">1. Introduction</h2>
                     <p class="text-gray-700 mb-4">
-                        At D'RANiK Techs, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our Platform.
+                        At D'RANIK Techs, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our Platform.
                     </p>
                     <p class="text-gray-700 mb-4">
                         By using our Platform, you consent to the data practices described in this policy.

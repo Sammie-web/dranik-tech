@@ -30,7 +30,7 @@ export default {
                 },
                 // Added brand colors based on suggested scheme
                 theme: {
-                    teal: '#008080', // primary accent
+                    teal: '#01889f', // primary accent (updated per request)
                     lightGray: '#F5F5F5', // secondary background
                     charcoal: '#222222', // main text
                     brightBlue: '#007BFF', // CTA
