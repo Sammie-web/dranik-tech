@@ -27,6 +27,14 @@ class PaymentController extends Controller
      */
     public function initialize(Request $request, Booking $booking)
     {
+        // Log incoming initialize attempts to help debug UI/redirect issues.
+        \Log::info('PaymentController::initialize called', [
+            'user_id' => auth()->id(),
+            'booking_id' => $booking->id,
+            'gateway_input' => $request->input('gateway'),
+            'uri' => $request->getRequestUri(),
+        ]);
+
         // Ensure user can only pay for their own booking
         if ($booking->customer_id !== auth()->id()) {
             abort(403);

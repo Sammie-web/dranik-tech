@@ -78,7 +78,7 @@
             @endauth
         </nav>
         @auth
-            @if(session('impersonator_id'))
+            @if(session('impersonator_id') && !Auth::user()->isAdmin())
                 <form method="POST" action="{{ route('admin.stop-impersonation') }}" class="mt-6 px-4">
                     @csrf
                     <button type="submit" class="w-full block px-3 py-2 mt-2 rounded text-left bg-theme-brightBlue text-white hover:bg-theme-brightBlue/90 transition">

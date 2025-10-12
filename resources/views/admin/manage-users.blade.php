@@ -47,6 +47,7 @@
                                                     @csrf
                                                     <button class="px-3 py-1 text-xs bg-black text-white rounded">Login as</button>
                                                 </form>
+                                                <a href="{{ route('admin.users.preview', $user) }}" class="px-3 py-1 text-xs border rounded">Preview Dashboard</a>
                                             </td>
                                         </tr>
                                     @endforeach

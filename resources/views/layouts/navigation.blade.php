@@ -179,7 +179,7 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        @if(session('impersonator_id'))
+                        @if(session('impersonator_id') && !Auth::user()->isAdmin())
                             <form method="POST" action="{{ route('admin.stop-impersonation') }}">
                                 @csrf
                                 <x-dropdown-link :href="route('admin.stop-impersonation')"

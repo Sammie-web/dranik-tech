@@ -165,7 +165,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/payments', [\App\Http\Controllers\AdminController::class, 'customerPayments'])->name('admin.payments');
         Route::get('/withdrawals', [\App\Http\Controllers\AdminController::class, 'vendorWithdrawals'])->name('admin.withdrawals');
         Route::post('/login-as/{user}', [\App\Http\Controllers\AdminController::class, 'loginAs'])->name('admin.login-as');
-        Route::post('/stop-impersonation', [\App\Http\Controllers\AdminController::class, 'stopImpersonation'])->name('admin.stop-impersonation');
+    // NOTE: stop-impersonation intentionally not defined here so that the
+    // impersonated user (who is not an admin) can call it to return to the
+    // original admin session. The actual route is defined below with
+    // only the 'auth' middleware.
+    // Admin preview: render a user's dashboard for admin without changing session
+    Route::get('/admin/users/{user}/preview', [\App\Http\Controllers\AdminController::class, 'previewUser'])->name('admin.users.preview');
         Route::get('/vendors/pending', [\App\Http\Controllers\AdminController::class, 'pendingVendors'])->name('admin.vendors.pending');
         Route::post('/vendors/{vendor}/verify', [\App\Http\Controllers\AdminController::class, 'verifyVendor'])->name('admin.vendors.verify');
         Route::get('/categories', [\App\Http\Controllers\CategoryController::class, 'adminIndex'])->name('admin.categories');
@@ -177,6 +182,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/gateways', [\App\Http\Controllers\AdminController::class, 'gateways'])->name('admin.gateways');
         Route::get('/broadcasts', [\App\Http\Controllers\AdminController::class, 'broadcasts'])->name('admin.broadcasts');
     });
+
+    // Allow any authenticated user (including an impersonated user) to stop
+    // impersonation and return control to the original admin. This route is
+    // defined outside the admin middleware so it doesn't return 403 when the
+    // current (impersonated) user is not an admin.
+    Route::post('/admin/stop-impersonation', [\App\Http\Controllers\AdminController::class, 'stopImpersonation'])->name('admin.stop-impersonation');
 
     // Chat routes per booking
     Route::get('/bookings/{booking}/chat', [\App\Http\Controllers\MessageController::class, 'thread'])->name('chat.thread');

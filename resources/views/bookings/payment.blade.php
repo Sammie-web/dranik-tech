@@ -76,9 +76,11 @@
 
                                 <!-- Payment Button -->
                                 <div class="pt-6">
-                                    <form method="POST" :action="getPaymentAction(selectedMethod)" x-ref="paymentForm" x-on:submit.prevent="handleSubmit($event)">
+                                    {{-- Provide server-side fallbacks so the form still works if JS/Alpine fails to load. --}}
+                                    <form method="POST" action="{{ route('payments.initialize', $booking) }}" :action="getPaymentAction(selectedMethod)" x-ref="paymentForm" x-on:submit.prevent="handleSubmit($event)">
                                         @csrf
-                                        <input type="hidden" name="gateway" :value="selectedMethod">
+                                        {{-- Default gateway value ensures the field is posted when JS is not present. Alpine will overwrite via :value. --}}
+                                        <input type="hidden" name="gateway" value="paystack" :value="selectedMethod">
                                         
                                         <button type="submit" 
                                                 :disabled="!selectedMethod"
@@ -222,16 +224,22 @@
                 },
                 
                 handleSubmit(event) {
+                    // If cash, confirm then submit to initialize route
                     if (this.selectedMethod === 'cash') {
                         event.preventDefault();
-                        
+
                         if (confirm('Confirm booking with cash payment on service delivery?\n\nNote: A booking fee of ₦{{ number_format($booking->commission) }} will still be charged to your card.')) {
                             // For cash payments, we still need to process the booking fee
                             this.$refs.paymentForm.action = '{{ route("payments.initialize", $booking) }}';
                             this.$refs.paymentForm.submit();
                         }
+                        return;
                     }
-                    // For other payment methods, let the form submit normally
+
+                    // For other payment methods the submit event was prevented by
+                    // the `.prevent` modifier on the handler, so submit programmatically.
+                    // This ensures gateways like Paystack/Flutterwave receive the POST.
+                    this.$refs.paymentForm.submit();
                 }
             }))
         });

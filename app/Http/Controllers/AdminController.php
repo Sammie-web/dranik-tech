@@ -96,6 +96,32 @@ class AdminController extends Controller
         return redirect()->route('dashboard');
     }
 
+    /**
+     * Preview a user's dashboard without changing the current admin session.
+     * This will temporarily set the authenticated user for the request only.
+     */
+    public function previewUser(User $user)
+    {
+        $this->ensureAdmin();
+
+        // Temporarily set the auth user for the current request only
+        $original = auth()->user();
+        auth()->setUser($user);
+
+        try {
+            // Render the appropriate dashboard view directly. Views expect auth()->user(),
+            // so we set the current user temporarily above.
+            if ($user->isProvider()) {
+                return view('provider.dashboard');
+            }
+
+            return view('customer.dashboard');
+        } finally {
+            // Restore original admin user so session remains unchanged
+            auth()->setUser($original);
+        }
+    }
+
     public function stopImpersonation()
     {
         // Do not require current user to be admin; rely on session
