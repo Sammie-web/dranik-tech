@@ -112,7 +112,7 @@ class CmsController extends Controller
                     ],
                     [
                         'question' => 'What payment methods do you accept?',
-                        'answer' => 'We accept all major credit/debit cards, bank transfers, and mobile money through our secure payment partners Paystack and Flutterwave.'
+                        'answer' => 'We accept all major credit/debit cards, bank transfers, and mobile money through our secure payment partner Paystack.'
                     ]
                 ]
             ],

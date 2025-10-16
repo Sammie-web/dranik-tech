@@ -66,6 +66,20 @@ class Booking extends Model
         return $this->belongsTo(Service::class);
     }
 
+    public function messages()
+    {
+        return $this->hasMany(\App\Models\Message::class);
+    }
+
+    /**
+     * Get the latest message for this booking.
+     */
+    public function lastMessage()
+    {
+        // latestOfMany() returns the most recent related model
+        return $this->hasOne(\App\Models\Message::class)->latestOfMany();
+    }
+
     public function payment()
     {
         return $this->hasOne(Payment::class);

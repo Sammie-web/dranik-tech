@@ -231,7 +231,7 @@
                 <div class="bg-white rounded-xl p-6 shadow-sm">
                     <h3 class="text-lg font-semibold text-gray-900 mb-3">Is my payment information secure?</h3>
                     <p class="text-gray-600">
-                        Yes, we use industry-standard encryption and work with trusted payment partners like Paystack and Flutterwave.
+                        Yes, we use industry-standard encryption and work with trusted payment partners like Paystack.
                     </p>
                 </div>
 

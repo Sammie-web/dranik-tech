@@ -23,14 +23,13 @@
                         <div class="p-6">
                             <h3 class="text-lg font-semibold text-gray-900 mb-6">Choose Payment Method</h3>
                             
-                            <div x-data="paymentHandler()" class="space-y-4">
+                            <div class="space-y-4">
                                 <!-- Paystack -->
                                 <div class="border rounded-lg p-4 cursor-pointer transition-colors duration-200"
                                      :class="{ 'border-black bg-gray-50': selectedMethod === 'paystack', 'border-gray-200': selectedMethod !== 'paystack' }"
                                      @click="selectedMethod = 'paystack'">
                                     <div class="flex items-center">
-                                        <input type="radio" name="payment_method" value="paystack" 
-                                               x-model="selectedMethod" class="mr-3 text-black focus:ring-black">
+                         <input type="radio" name="payment_method" value="paystack" class="mr-3 text-black focus:ring-black">
                                         <div class="flex-1">
                                             <div class="flex items-center justify-between">
                                                 <h4 class="font-medium text-gray-900">Paystack</h4>
@@ -43,58 +42,33 @@
                                     </div>
                                 </div>
 
-                                <!-- Flutterwave -->
-                                <div class="border rounded-lg p-4 cursor-pointer transition-colors duration-200"
-                                     :class="{ 'border-black bg-gray-50': selectedMethod === 'flutterwave', 'border-gray-200': selectedMethod !== 'flutterwave' }"
-                                     @click="selectedMethod = 'flutterwave'">
-                                    <div class="flex items-center">
-                                        <input type="radio" name="payment_method" value="flutterwave" 
-                                               x-model="selectedMethod" class="mr-3 text-black focus:ring-black">
-                                        <div class="flex-1">
-                                            <h4 class="font-medium text-gray-900">Flutterwave</h4>
-                                            <p class="text-sm text-gray-600 mt-1">Alternative payment gateway with multiple options</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Cash Payment (for mobile services) -->
-                                @if($booking->service->is_mobile)
-                                    <div class="border rounded-lg p-4 cursor-pointer transition-colors duration-200"
-                                         :class="{ 'border-black bg-gray-50': selectedMethod === 'cash', 'border-gray-200': selectedMethod !== 'cash' }"
-                                         @click="selectedMethod = 'cash'">
-                                        <div class="flex items-center">
-                                            <input type="radio" name="payment_method" value="cash" 
-                                                   x-model="selectedMethod" class="mr-3 text-black focus:ring-black">
-                                            <div class="flex-1">
-                                                <h4 class="font-medium text-gray-900">Pay on Service</h4>
-                                                <p class="text-sm text-gray-600 mt-1">Pay cash directly to the service provider</p>
-                                                <p class="text-xs text-orange-600 mt-1">⚠️ Booking fee of ₦{{ number_format($booking->commission) }} still applies</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
+                                <!-- Other gateways removed; only Paystack remains -->
 
                                 <!-- Payment Button -->
                                 <div class="pt-6">
-                                    {{-- Provide server-side fallbacks so the form still works if JS/Alpine fails to load. --}}
-                                    <form method="POST" action="{{ route('payments.initialize', $booking) }}" :action="getPaymentAction(selectedMethod)" x-ref="paymentForm" x-on:submit.prevent="handleSubmit($event)">
+                                    <form method="POST" action="{{ route('payments.initialize', $booking) }}">
                                         @csrf
-                                        {{-- Default gateway value ensures the field is posted when JS is not present. Alpine will overwrite via :value. --}}
-                                        <input type="hidden" name="gateway" value="paystack" :value="selectedMethod">
-                                        
-                                        <button type="submit" 
-                                                :disabled="!selectedMethod"
-                                                :class="{
-                                                    'bg-gray-400 cursor-not-allowed': !selectedMethod,
-                                                    'bg-black hover:bg-gray-800': selectedMethod
-                                                }"
-                                                class="w-full text-white py-4 rounded-lg font-semibold transition-colors duration-200 flex items-center justify-center">
+
+                                        @if($booking->service->price_type === 'negotiable')
+                                            <div class="mb-4">
+                                                <label class="block text-sm font-medium text-gray-700 mb-2">Negotiated Amount (NGN)</label>
+                                                <input id="negotiated-amount" type="number" name="negotiated_amount" step="0.01" min="0.01"
+                                                       value="{{ old('negotiated_amount', $booking->amount > 0 ? $booking->amount : '') }}"
+                                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent" required>
+                                                <p class="text-xs text-gray-500 mt-1">Enter the final agreed amount you will pay the provider. This must be a positive number and less than or equal to the listed price (₦{{ number_format($booking->service->price) }}).</p>
+                                            </div>
+                                        @else
+                                            <input id="negotiated-amount" type="hidden" name="negotiated_amount" value="{{ $booking->amount }}">
+                                        @endif
+
+                                        <input type="hidden" name="gateway" value="paystack">
+
+                                        <button id="pay-button" type="submit" class="w-full text-white py-4 rounded-lg font-semibold bg-black hover:bg-gray-800 transition-colors duration-200 flex items-center justify-center">
                                             <i data-feather="lock" class="w-5 h-5 mr-2"></i>
-                                            <span x-show="selectedMethod === 'cash'">Confirm Booking</span>
-                                            <span x-show="selectedMethod !== 'cash'">Pay ₦{{ number_format($booking->amount) }}</span>
+                                            <span id="pay-button-label">Pay ₦{{ number_format($booking->amount) }}</span>
                                         </button>
                                     </form>
-                                    
+
                                     <div class="flex items-center justify-center mt-4 text-sm text-gray-500">
                                         <i data-feather="shield" class="w-4 h-4 mr-2"></i>
                                         <span>Your payment is secured with 256-bit SSL encryption</span>
@@ -168,15 +142,15 @@
                             <div class="border-t border-gray-200 pt-4 space-y-2">
                                 <div class="flex justify-between text-sm">
                                     <span class="text-gray-600">Service Price</span>
-                                    <span class="font-medium">₦{{ number_format($booking->service->price) }}</span>
+                                    <span id="service-price" class="font-medium">₦{{ number_format($booking->service->price) }}</span>
                                 </div>
                                 <div class="flex justify-between text-sm">
                                     <span class="text-gray-600">Platform Fee</span>
-                                    <span class="font-medium">₦{{ number_format($booking->commission) }}</span>
+                                    <span id="platform-fee" class="font-medium">₦{{ number_format($booking->commission) }}</span>
                                 </div>
                                 <div class="border-t border-gray-200 pt-2 flex justify-between">
                                     <span class="font-semibold text-gray-900">Total Amount</span>
-                                    <span class="font-semibold text-gray-900">₦{{ number_format($booking->amount) }}</span>
+                                    <span id="amount-to-pay" class="font-semibold text-gray-900">₦{{ number_format($booking->amount) }}</span>
                                 </div>
                             </div>
 
@@ -201,48 +175,55 @@
 
     @push('scripts')
     <script>
-        function getPaymentAction(method) {
-            // Always initialize payment on the payments.initialize route. Cash payments
-            // will be handled by the server-side initialization as well (the form
-            // includes gateway=cash). This avoids posting to the current booking URL.
-            return '{{ route("payments.initialize", $booking) }}';
-        }
+        (function(){
+            // Elements
+            const negotiatedEl = document.getElementById('negotiated-amount');
+            const payLabelEl = document.getElementById('pay-button-label');
+            const amountToPayEl = document.getElementById('amount-to-pay');
+            // Service price as a number
+            const servicePrice = Number({{ $booking->service->price }});
 
-        // Handle cash payment confirmation
-        document.addEventListener('alpine:init', () => {
-            Alpine.data('paymentHandler', () => ({
-                selectedMethod: 'paystack',
-                
-                getPaymentAction(method) {
-                    // For the Alpine component we return '#' for cash so that the
-                    // submit handler can intercept and ask for confirmation. For
-                    // other gateways return the initialize route.
-                    if (method === 'cash') {
-                        return '#';
-                    }
-                    return '{{ route("payments.initialize", $booking) }}';
-                },
-                
-                handleSubmit(event) {
-                    // If cash, confirm then submit to initialize route
-                    if (this.selectedMethod === 'cash') {
-                        event.preventDefault();
-
-                        if (confirm('Confirm booking with cash payment on service delivery?\n\nNote: A booking fee of ₦{{ number_format($booking->commission) }} will still be charged to your card.')) {
-                            // For cash payments, we still need to process the booking fee
-                            this.$refs.paymentForm.action = '{{ route("payments.initialize", $booking) }}';
-                            this.$refs.paymentForm.submit();
-                        }
-                        return;
-                    }
-
-                    // For other payment methods the submit event was prevented by
-                    // the `.prevent` modifier on the handler, so submit programmatically.
-                    // This ensures gateways like Paystack/Flutterwave receive the POST.
-                    this.$refs.paymentForm.submit();
+            function formatCurrency(value) {
+                try {
+                    return '₦' + new Intl.NumberFormat().format(Number(value).toFixed(2));
+                } catch (e) {
+                    return '₦' + Number(value).toFixed(2);
                 }
-            }))
-        });
+            }
+
+            function clamp(n, min, max) {
+                if (isNaN(n)) return min;
+                return Math.max(min, Math.min(max, n));
+            }
+
+            // Elements for breakdown
+            const servicePriceEl = document.getElementById('service-price');
+            const platformFeeEl = document.getElementById('platform-fee');
+
+            function onNegotiatedInput() {
+                if (!negotiatedEl) return;
+                let val = parseFloat(negotiatedEl.value);
+                if (isNaN(val)) val = 0;
+                // Clamp to service price
+                if (servicePrice && val > servicePrice) val = servicePrice;
+
+                // Calculate platform commission (5%)
+                const commission = +(val * 0.05).toFixed(2);
+                const displayVal = val || {{ $booking->amount }};
+
+                // Update display elements
+                if (payLabelEl) payLabelEl.textContent = 'Pay ' + formatCurrency(displayVal);
+                if (amountToPayEl) amountToPayEl.textContent = formatCurrency(displayVal);
+                if (servicePriceEl) servicePriceEl.textContent = formatCurrency(displayVal);
+                if (platformFeeEl) platformFeeEl.textContent = formatCurrency(commission);
+            }
+
+            if (negotiatedEl) {
+                negotiatedEl.addEventListener('input', onNegotiatedInput);
+                // Trigger initial formatting
+                onNegotiatedInput();
+            }
+        })();
     </script>
     @endpush
 </x-app-layout>

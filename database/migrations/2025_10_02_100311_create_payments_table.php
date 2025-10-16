@@ -20,7 +20,7 @@ return new class extends Migration
             $table->decimal('amount', 10, 2);
             $table->decimal('commission', 10, 2)->default(0.00);
             $table->decimal('provider_amount', 10, 2);
-            $table->enum('gateway', ['paystack', 'flutterwave', 'cash']);
+            $table->enum('gateway', ['paystack']);
             $table->string('gateway_reference')->nullable();
             $table->enum('status', ['pending', 'processing', 'completed', 'failed', 'refunded'])->default('pending');
             $table->json('gateway_response')->nullable();

@@ -31,7 +31,6 @@ class BookingControllerTest extends TestCase
             'slug' => 'test-service',
             'description' => 'A test service',
             'price' => 1000,
-            'duration' => 60,
             'is_active' => true,
         ]);
         // Provider has availability only on Monday
@@ -72,7 +71,6 @@ class BookingControllerTest extends TestCase
             'slug' => 'test-service-2',
             'description' => 'Another test service',
             'price' => 1500,
-            'duration' => 60,
             'is_active' => true,
         ]);
         ProviderAvailability::create([

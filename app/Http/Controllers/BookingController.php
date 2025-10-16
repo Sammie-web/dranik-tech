@@ -16,6 +16,39 @@ class BookingController extends Controller
         $this->middleware('auth');
     }
 
+    /**
+     * Create or return a provisional booking for starting a chat/inquiry with the provider.
+     * This allows customers to contact providers before making a full booking/payment.
+     */
+    public function startChat(Service $service)
+    {
+        $user = auth()->user();
+
+        // Find an existing booking for this customer and provider for this service that can be used for chat
+        $booking = Booking::where('customer_id', $user->id)
+            ->where('provider_id', $service->provider_id)
+            ->where('service_id', $service->id)
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->latest()
+            ->first();
+
+        if (!$booking) {
+            // Create a minimal provisional booking record (no payment) to anchor messages
+            $booking = Booking::create([
+                'customer_id' => $user->id,
+                'provider_id' => $service->provider_id,
+                'service_id' => $service->id,
+                'scheduled_at' => now(),
+                'amount' => 0.00,
+                'commission' => 0.00,
+                'customer_notes' => 'Provisional inquiry created for chat',
+                'status' => 'pending',
+            ]);
+        }
+
+        return redirect()->route('chat.thread', $booking);
+    }
+
     public function create(Service $service)
     {
         // Get provider availability for the next 30 days
@@ -64,9 +97,7 @@ class BookingController extends Controller
             ];
         }
 
-    $serviceDuration = (int) ($service->duration ?? 0);
-
-    return view('bookings.create', compact('service', 'availabilities', 'existingBookings', 'slotInterval', 'providerTz', 'customerTz', 'availabilityMap', 'serviceDuration'));
+    return view('bookings.create', compact('service', 'availabilities', 'existingBookings', 'slotInterval', 'providerTz', 'customerTz', 'availabilityMap'));
     }
 
     public function store(Request $request, Service $service)
@@ -138,7 +169,7 @@ class BookingController extends Controller
                 'provider_amount' => $amount - $commission,
                 // Use a valid gateway enum placeholder. The actual gateway will be set when the user selects a payment provider.
                 // 'pending' is not a valid enum for the `gateway` column and previously caused an insert failure.
-                'gateway' => 'cash',
+                'gateway' => 'paystack',
                 'status' => 'pending',
             ]);
 

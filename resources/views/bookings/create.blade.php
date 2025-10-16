@@ -203,12 +203,7 @@
                             <!-- Service Details -->
                             <div class="border-t border-gray-200 pt-4 mt-4">
                                 <div class="space-y-2 text-sm">
-                                    @if($service->duration)
-                                        <div class="flex items-center text-gray-600">
-                                            <i data-feather="clock" class="w-4 h-4 mr-2"></i>
-                                            <span>{{ $service->duration }} minutes</span>
-                                        </div>
-                                    @endif
+                                    {{-- Duration removed --}}
                                     <div class="flex items-center text-gray-600">
                                         <i data-feather="map-pin" class="w-4 h-4 mr-2"></i>
                                         <span>{{ $service->location }}</span>
@@ -253,8 +248,9 @@
             const existingBookings = @json($existingBookings);
 
             // Slot interval and timezone hints
-            const SLOT_INTERVAL = Number(@json($slotInterval ?? 30));
-                const duration = Number(@json($serviceDuration ?? 0));
+                const SLOT_INTERVAL = Number(@json($slotInterval ?? 30));
+                // duration was removed from services; default to 0 for slot calculations
+                const duration = 0;
             const PROVIDER_TZ = @json($providerTz ?? config('app.timezone'));
             const CUSTOMER_TZ = @json($customerTz ?? config('app.timezone'));
 

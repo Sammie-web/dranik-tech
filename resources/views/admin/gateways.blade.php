@@ -6,7 +6,7 @@
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <p class="text-gray-600">Coming soon: configure Paystack and Flutterwave keys.</p>
+                    <p class="text-gray-600">Coming soon: configure Paystack keys.</p>
                 </div>
             </div>
         </div>

@@ -86,8 +86,8 @@ class ReviewController extends Controller
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        DB::beginTransaction();
-        try {
+    DB::beginTransaction();
+    try {
             // Handle image uploads
             $images = [];
             if ($request->hasFile('images')) {
@@ -114,11 +114,18 @@ class ReviewController extends Controller
 
             DB::commit();
 
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['status' => 'ok', 'review' => $review], 201);
+            }
+
             return redirect()->route('reviews.show', $review)
                 ->with('success', 'Thank you for your review! It helps other customers make informed decisions.');
 
         } catch (\Exception $e) {
             DB::rollback();
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json(['status' => 'error', 'message' => 'Failed to submit review. Please try again.'], 500);
+            }
             return back()->withErrors(['error' => 'Failed to submit review. Please try again.']);
         }
     }
@@ -284,6 +291,22 @@ class ReviewController extends Controller
             ->paginate(10);
 
         return view('reviews.customer', compact('reviews'));
+    }
+
+    /**
+     * List completed bookings belonging to customer that don't have a review yet
+     */
+    public function pendingForCustomer()
+    {
+        $user = auth()->user();
+        $bookings = Booking::where('customer_id', $user->id)
+            ->where('status', 'completed')
+            ->whereDoesntHave('review')
+            ->with(['service', 'provider'])
+            ->latest('completed_at')
+            ->paginate(10);
+
+        return view('reviews.pending', compact('bookings'));
     }
 
     /**

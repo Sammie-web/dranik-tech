@@ -6,20 +6,17 @@ use Illuminate\Http\Request;
 use App\Models\Booking;
 use App\Models\Payment;
 use App\Services\PaystackService;
-use App\Services\FlutterwaveService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
     protected $paystackService;
-    protected $flutterwaveService;
 
-    public function __construct(PaystackService $paystackService, FlutterwaveService $flutterwaveService)
+    public function __construct(PaystackService $paystackService)
     {
         $this->middleware('auth');
         $this->paystackService = $paystackService;
-        $this->flutterwaveService = $flutterwaveService;
     }
 
     /**
@@ -46,14 +43,37 @@ class PaymentController extends Controller
                 ->with('info', 'Payment has already been completed for this booking.');
         }
 
-        $request->validate([
-            'gateway' => 'required|in:paystack,flutterwave',
-        ]);
+        $rules = [
+            'gateway' => 'required|in:paystack',
+        ];
+
+        // If the service is negotiable allow a negotiated_amount input
+        if ($booking->service && $booking->service->price_type === 'negotiable') {
+            $rules['negotiated_amount'] = 'required|numeric|min:0.01|max:' . $booking->service->price;
+        } else {
+            $rules['negotiated_amount'] = 'nullable|numeric|min:0.01';
+        }
+
+        $request->validate($rules);
 
         $gateway = $request->gateway;
         $user = auth()->user();
 
         // Prepare payment data
+        // If a negotiated amount was provided, update the booking & payment amounts
+        $negotiated = $request->input('negotiated_amount');
+        if ($negotiated) {
+            $negotiated = (float) $negotiated;
+            // Update booking amount and commission accordingly (commission still based on amount)
+            $commission = round($negotiated * 0.05, 2);
+            $booking->update(['amount' => $negotiated, 'commission' => $commission]);
+
+            // Update payment record if it exists
+            if ($booking->payment) {
+                $booking->payment->update(['amount' => $negotiated, 'commission' => $commission, 'provider_amount' => $negotiated - $commission]);
+            }
+        }
+
         $paymentData = [
             'email' => $user->email,
             'amount' => $booking->amount,
@@ -69,20 +89,32 @@ class PaymentController extends Controller
 
         try {
             // Initialize payment with selected gateway
-            if ($gateway === 'paystack') {
-                $result = $this->paystackService->initializePayment($paymentData);
-            } else {
-                $result = $this->flutterwaveService->initializePayment($paymentData);
-            }
+            // Only Paystack is supported
+            $result = $this->paystackService->initializePayment($paymentData);
 
             if ($result['status'] === 'success') {
-                // Update payment record with gateway reference
-                $booking->payment->update([
-                    'gateway' => $gateway,
-                    'gateway_reference' => $paymentData['reference'],
-                    'status' => 'processing',
-                ]);
-
+                // Ensure a payment record exists for this booking
+                $payment = $booking->payment;
+                if (!$payment) {
+                    $payment = Payment::create([
+                        'booking_id' => $booking->id,
+                        'customer_id' => $user->id,
+                        'provider_id' => $booking->provider_id,
+                        'amount' => $booking->amount,
+                        'commission' => $booking->commission,
+                        'provider_amount' => $booking->amount - $booking->commission,
+                        'gateway' => $gateway,
+                        'gateway_reference' => $paymentData['reference'],
+                        'status' => 'processing',
+                    ]);
+                } else {
+                    // Update payment record with gateway reference
+                    $payment->update([
+                        'gateway' => $gateway,
+                        'gateway_reference' => $paymentData['reference'],
+                        'status' => 'processing',
+                    ]);
+                }
                 // Redirect to payment gateway
                 return redirect($result['authorization_url']);
             }
@@ -103,8 +135,6 @@ class PaymentController extends Controller
         try {
             if ($gateway === 'paystack') {
                 return $this->handlePaystackCallback($request);
-            } elseif ($gateway === 'flutterwave') {
-                return $this->handleFlutterwaveCallback($request);
             }
 
             return redirect()->route('dashboard')->withErrors(['error' => 'Invalid payment gateway.']);
@@ -139,30 +169,7 @@ class PaymentController extends Controller
         return $this->processPaymentResult($payment, $result);
     }
 
-    /**
-     * Handle Flutterwave payment callback
-     */
-    private function handleFlutterwaveCallback(Request $request)
-    {
-        $transactionId = $request->query('transaction_id');
-        $reference = $request->query('tx_ref');
-        
-        if (!$transactionId || !$reference) {
-            return redirect()->route('dashboard')->withErrors(['error' => 'Payment details not found.']);
-        }
-
-        // Find payment by reference
-        $payment = Payment::where('gateway_reference', $reference)->first();
-        
-        if (!$payment) {
-            return redirect()->route('dashboard')->withErrors(['error' => 'Payment record not found.']);
-        }
-
-        // Verify payment with Flutterwave
-        $result = $this->flutterwaveService->verifyPayment($transactionId);
-
-        return $this->processPaymentResult($payment, $result);
-    }
+    // (Payment gateway support limited to Paystack)
 
     /**
      * Process payment verification result
@@ -218,8 +225,6 @@ class PaymentController extends Controller
         try {
             if ($gateway === 'paystack') {
                 return $this->handlePaystackWebhook($request);
-            } elseif ($gateway === 'flutterwave') {
-                return $this->handleFlutterwaveWebhook($request);
             }
 
             return response()->json(['status' => 'error', 'message' => 'Invalid gateway'], 400);
@@ -258,32 +263,7 @@ class PaymentController extends Controller
         return response()->json(['status' => 'success']);
     }
 
-    /**
-     * Handle Flutterwave webhook
-     */
-    private function handleFlutterwaveWebhook(Request $request)
-    {
-        // Verify webhook signature
-        $signature = $request->header('verif-hash');
-        
-        if (!hash_equals($signature, config('services.flutterwave.secret_key'))) {
-            return response()->json(['status' => 'error', 'message' => 'Invalid signature'], 400);
-        }
-
-        $event = $request->json()->all();
-        
-        if ($event['event'] === 'charge.completed') {
-            $reference = $event['data']['tx_ref'];
-            $payment = Payment::where('gateway_reference', $reference)->first();
-            
-            if ($payment && $payment->status !== 'completed') {
-                $result = $this->flutterwaveService->verifyPayment($event['data']['id']);
-                $this->processPaymentResult($payment, $result);
-            }
-        }
-
-        return response()->json(['status' => 'success']);
-    }
+    // (Webhook handling is Paystack-only)
 
     /**
      * Initiate refund for a payment
@@ -300,11 +280,8 @@ class PaymentController extends Controller
         }
 
         try {
-            if ($payment->gateway === 'paystack') {
-                $result = $this->paystackService->refundPayment($payment->gateway_reference);
-            } else {
-                $result = $this->flutterwaveService->refundPayment($payment->gateway_reference);
-            }
+            // Only Paystack supported
+            $result = $this->paystackService->refundPayment($payment->gateway_reference);
 
             if ($result['status'] === 'success') {
                 $payment->update(['status' => 'refunded']);
@@ -326,7 +303,7 @@ class PaymentController extends Controller
      */
     private function generatePaymentReference($gateway)
     {
-        $prefix = $gateway === 'paystack' ? 'PAY' : 'FLW';
-        return $prefix . '_' . time() . '_' . strtoupper(substr(md5(uniqid()), 0, 8));
+        // Only Paystack in use
+        return 'PAY_' . time() . '_' . strtoupper(substr(md5(uniqid()), 0, 8));
     }
 }

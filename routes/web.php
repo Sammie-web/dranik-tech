@@ -69,7 +69,9 @@ Route::middleware('auth')->group(function () {
     // Routes requiring verified email
     Route::middleware('verified')->group(function () {
         // Booking routes
-        Route::get('/services/{service}/book', [\App\Http\Controllers\BookingController::class, 'create'])->name('bookings.create');
+    Route::get('/services/{service}/book', [\App\Http\Controllers\BookingController::class, 'create'])->name('bookings.create');
+    // Start a quick chat/inquiry with the provider by creating a provisional booking if needed
+    Route::get('/services/{service}/start-chat', [\App\Http\Controllers\BookingController::class, 'startChat'])->name('services.start_chat');
         Route::post('/services/{service}/book', [\App\Http\Controllers\BookingController::class, 'store'])->name('bookings.store');
         Route::get('/bookings/{booking}', [\App\Http\Controllers\BookingController::class, 'show'])->name('bookings.show');
         // Defensive route: capture accidental POSTs to bookings.show and log them
@@ -104,6 +106,8 @@ Route::middleware('auth')->group(function () {
         // Review routes
         Route::get('/services/{service}/reviews', [\App\Http\Controllers\ReviewController::class, 'index'])->name('reviews.index');
         Route::get('/bookings/{booking}/review/create', [\App\Http\Controllers\ReviewController::class, 'create'])->name('reviews.create');
+    // Customer: list completed bookings that can be reviewed
+    Route::get('/my/reviews/pending', [\App\Http\Controllers\ReviewController::class, 'pendingForCustomer'])->name('reviews.pending');
         Route::post('/bookings/{booking}/review', [\App\Http\Controllers\ReviewController::class, 'store'])->name('reviews.store');
         Route::get('/reviews/{review}', [\App\Http\Controllers\ReviewController::class, 'show'])->name('reviews.show');
         Route::get('/reviews/{review}/edit', [\App\Http\Controllers\ReviewController::class, 'edit'])->name('reviews.edit');
@@ -148,6 +152,8 @@ Route::middleware('auth')->group(function () {
         // Chat routes per booking
         Route::get('/bookings/{booking}/chat', [\App\Http\Controllers\MessageController::class, 'thread'])->name('chat.thread');
         Route::post('/bookings/{booking}/chat', [\App\Http\Controllers\MessageController::class, 'send'])->name('chat.send');
+    // Customer chat inbox (list of booking threads)
+    Route::get('/my/chats', [\App\Http\Controllers\MessageController::class, 'inbox'])->name('customer.chats');
     });
 
     // Admin routes (restricted to admin role)
@@ -213,7 +219,6 @@ Route::get('/_debug-booking', function () {
         'slug' => 'debug-service',
         'description' => 'Debug service description',
         'price' => 1000,
-        'duration' => 60,
         'is_active' => true,
     ]);
 

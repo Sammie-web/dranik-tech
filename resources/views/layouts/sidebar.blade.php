@@ -31,6 +31,10 @@
                     <a href="{{ route('bookings.history') }}"
                         class="block px-3 py-2 rounded {{ request()->routeIs('bookings.history') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">My
                         Bookings</a>
+                    <a href="{{ route('customer.chats') }}"
+                        class="block px-3 py-2 rounded {{ request()->routeIs('customer.chats') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">My Chats</a>
+                    <a href="{{ route('reviews.pending') }}"
+                        class="block px-3 py-2 rounded {{ request()->routeIs('reviews.pending') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">Leave a Review</a>
                     <a href="{{ route('profile.edit') }}"
                         class="block px-3 py-2 rounded {{ request()->routeIs('profile.edit') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">Profile</a>
                 @endif

@@ -56,6 +56,9 @@
                             <x-nav-link :href="route('bookings.history')" :active="request()->routeIs('bookings.history')">
                                 {{ __('My Bookings') }}
                             </x-nav-link>
+                            <x-nav-link :href="route('customer.chats')" :active="request()->routeIs('customer.chats')">
+                                {{ __('My Chats') }}
+                            </x-nav-link>
                         @endif
 
                         @if(Auth::user()->isProvider())

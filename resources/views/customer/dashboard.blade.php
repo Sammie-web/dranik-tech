@@ -90,7 +90,10 @@
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-900">Recent Bookings</h3>
-                            <a href="{{ route('bookings.history') }}" class="text-sm text-blue-600 hover:text-blue-800">View All</a>
+                            <div class="space-x-3">
+                                <a href="{{ route('customer.chats') }}" class="text-sm text-blue-600 hover:text-blue-800">My Chats</a>
+                                <a href="{{ route('bookings.history') }}" class="text-sm text-blue-600 hover:text-blue-800">View All</a>
+                            </div>
                         </div>
                         
                         @php

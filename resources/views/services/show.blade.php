@@ -88,10 +88,7 @@
                         <div>
                             <h4 class="font-medium text-gray-900 mb-3">Service Details</h4>
                             <div class="space-y-2">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-gray-600">Duration:</span>
-                                    <span class="font-medium">{{ $service->duration ? $service->duration . ' minutes' : 'Varies' }}</span>
-                                </div>
+                                {{-- Duration removed as per request --}}
                                 <div class="flex items-center justify-between">
                                     <span class="text-gray-600">Price Type:</span>
                                     <span class="font-medium capitalize">{{ $service->price_type }}</span>
@@ -236,8 +233,12 @@
                             <a href="{{ route('chat.thread', $chatBooking) }}" class="block w-full text-center border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors duration-200">
                                 Contact Provider
                             </a>
+                        @elseif(auth()->check())
+                            <a href="{{ route('services.start_chat', $service) }}" class="block w-full text-center border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors duration-200">
+                                Contact Provider
+                            </a>
                         @else
-                            <a href="#" onclick="event.preventDefault(); alert('You need a booking with this provider to start a chat. Please book the service first.');" class="block w-full text-center border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors duration-200">
+                            <a href="{{ route('login') }}" class="block w-full text-center border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors duration-200">
                                 Contact Provider
                             </a>
                         @endif
@@ -254,10 +255,7 @@
                     <!-- Quick Info -->
                     <div class="mt-6 pt-6 border-t border-gray-200">
                         <div class="space-y-3">
-                            <div class="flex items-center text-sm">
-                                <i data-feather="clock" class="w-4 h-4 text-gray-400 mr-3"></i>
-                                <span class="text-gray-600">{{ $service->duration ? $service->duration . ' minutes' : 'Duration varies' }}</span>
-                            </div>
+                            {{-- Duration removed from quick info --}}
                             <div class="flex items-center text-sm">
                                 <i data-feather="map-pin" class="w-4 h-4 text-gray-400 mr-3"></i>
                                 <span class="text-gray-600">{{ $service->location }}</span>
