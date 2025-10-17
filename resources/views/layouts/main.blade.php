@@ -13,11 +13,25 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
         
-        <!-- Feather Icons -->
+        <!-- Favicon and PWA manifest -->
         @if(!empty($platformSettings['site_favicon']))
+            <!-- Use uploaded favicon (stored on public disk) -->
             <link rel="icon" type="image/png" href="{{ asset('storage/' . $platformSettings['site_favicon']) }}">
+            <link rel="apple-touch-icon" href="{{ asset('storage/' . $platformSettings['site_favicon']) }}">
+        @else
+            <!-- Fallback static files in public/ -->
+            {{-- <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon"> --}}
+            <!-- Feather Icons -->
+            <script src="https://unpkg.com/feather-icons"></script>
+            <link rel="apple-touch-icon" href="{{ asset('storage/' . $platformSettings['site_favicon']) }}">
         @endif
-        <script src="https://unpkg.com/feather-icons"></script>
+        <!-- Web App Manifest for 'Add to Home screen' on mobile -->
+        <link rel="manifest" href="{{ asset('site.webmanifest') }}">
+        <meta name="theme-color" content="#ffffff">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+
+        
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])

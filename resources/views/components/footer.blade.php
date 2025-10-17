@@ -72,8 +72,8 @@
                     <h3 class="text-lg font-semibold mb-2">Stay Updated</h3>
                     <p class="text-gray-300">Get the latest updates on new services and special offers.</p>
                 </div>
-                <div class="flex w-full lg:w-auto">
-                    <input type="email" placeholder="Enter your email" class="flex-1 lg:w-64 px-4 py-2 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent text-white placeholder-gray-400">
+                <div class="flex w-full lg:w-auto md:w-auto">
+                    <input type="email" placeholder="Enter your email" class="flex-1 lg:w-40 px-4 py-2 bg-gray-800 border border-gray-700 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent text-white placeholder-gray-400">
                     <button class="px-6 py-2 bg-white text-black rounded-r-lg hover:bg-gray-200 transition-colors duration-200 font-medium">
                         Subscribe
                     </button>

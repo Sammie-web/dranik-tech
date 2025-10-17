@@ -6,8 +6,47 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\EnsureUserRole;
+use App\Models\Setting;
+use Illuminate\Http\Response;
 
 // Public Routes
+// Dynamic web manifest that uses the uploaded site_favicon when present
+Route::get('/site.webmanifest', function () {
+    $faviconPath = Setting::get('site_favicon');
+
+    if (!empty($faviconPath)) {
+        // asset('storage/...') will resolve to /storage/...
+        $iconUrl192 = asset('storage/' . $faviconPath);
+        $iconUrl512 = asset('storage/' . $faviconPath);
+    } else {
+        $iconUrl192 = asset('favicon-192.png');
+        $iconUrl512 = asset('favicon-512.png');
+    }
+
+    $manifest = [
+        'name' => config('app.name', "D'RANIK Techs"),
+        'short_name' => config('app.name', 'D\'RANIK'),
+        'start_url' => url('/'),
+        'display' => 'standalone',
+        'background_color' => '#ffffff',
+        'theme_color' => '#ffffff',
+        'icons' => [
+            [
+                'src' => $iconUrl192,
+                'sizes' => '192x192',
+                'type' => 'image/png',
+            ],
+            [
+                'src' => $iconUrl512,
+                'sizes' => '512x512',
+                'type' => 'image/png',
+            ],
+        ],
+    ];
+
+    return response()->json($manifest)->header('Content-Type', 'application/manifest+json');
+});
+
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/services', [ServiceController::class, 'index'])->name('services.index');
 Route::get('/services/{service}', [ServiceController::class, 'show'])->name('services.show');

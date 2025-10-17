@@ -20,7 +20,15 @@
         x-show="open || window.innerWidth >= 768">
         <div class="h-16 flex items-center px-4 border-b border-gray-200 md:hidden">
             <a href="{{ route('dashboard') }}">
-                <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                @if(!empty($platformSettings['site_logo']))
+                    {{-- Larger responsive logo for better visibility --}}
+                    <img src="{{ asset('storage/' . $platformSettings['site_logo']) }}" alt="Logo"
+                        class="w-[48px] h-16 md:w-[24px] md:h-12  rounded-lg">
+                @else
+                    <div class="w-10 h-10 md:w-12 md:h-12 bg-black rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">D</span>
+                    </div>
+                @endif
             </a>
         </div>
         <nav class="p-4 space-y-1">
@@ -32,9 +40,11 @@
                         class="block px-3 py-2 rounded {{ request()->routeIs('bookings.history') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">My
                         Bookings</a>
                     <a href="{{ route('customer.chats') }}"
-                        class="block px-3 py-2 rounded {{ request()->routeIs('customer.chats') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">My Chats</a>
+                        class="block px-3 py-2 rounded {{ request()->routeIs('customer.chats') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">My
+                        Chats</a>
                     <a href="{{ route('reviews.pending') }}"
-                        class="block px-3 py-2 rounded {{ request()->routeIs('reviews.pending') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">Leave a Review</a>
+                        class="block px-3 py-2 rounded {{ request()->routeIs('reviews.pending') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">Leave
+                        a Review</a>
                     <a href="{{ route('profile.edit') }}"
                         class="block px-3 py-2 rounded {{ request()->routeIs('profile.edit') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">Profile</a>
                 @endif
@@ -75,7 +85,8 @@
                     <a href="{{ route('admin.gateways') }}"
                         class="block px-3 py-2 rounded {{ request()->routeIs('admin.gateways') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">Gateways</a>
                     <a href="{{ route('admin.platform-settings') }}"
-                        class="block px-3 py-2 rounded {{ request()->routeIs('admin.platform-settings') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">Platform Settings</a>
+                        class="block px-3 py-2 rounded {{ request()->routeIs('admin.platform-settings') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">Platform
+                        Settings</a>
                     <a href="{{ route('profile.edit') }}"
                         class="block px-3 py-2 rounded {{ request()->routeIs('profile.edit') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-50' }}">Profile</a>
                 @endif
@@ -85,7 +96,8 @@
             @if(session('impersonator_id') && !Auth::user()->isAdmin())
                 <form method="POST" action="{{ route('admin.stop-impersonation') }}" class="mt-6 px-4">
                     @csrf
-                    <button type="submit" class="w-full block px-3 py-2 mt-2 rounded text-left bg-theme-brightBlue text-white hover:bg-theme-brightBlue/90 transition">
+                    <button type="submit"
+                        class="w-full block px-3 py-2 mt-2 rounded text-left bg-theme-brightBlue text-white hover:bg-theme-brightBlue/90 transition">
                         <i data-feather="corner-up-left" class="inline w-4 h-4 mr-2 align-text-bottom"></i>
                         Stop Impersonation
                     </button>

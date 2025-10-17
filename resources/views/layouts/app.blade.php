@@ -37,7 +37,14 @@
                                     <i data-feather="menu" class="w-6 h-6"></i>
                                 </button>
                                 <a href="{{ route('dashboard') }}" class="flex items-center">
-                                    <x-application-logo class="block h-8 w-auto fill-current text-gray-800" />
+                                    @if(!empty($platformSettings['site_logo']))
+                                        {{-- Larger responsive logo for better visibility --}}
+                                        <img src="{{ asset('storage/' . $platformSettings['site_logo']) }}" alt="Logo" class="w-[48px] h-16 md:w-[24px] md:h-12  rounded-lg">
+                                    @else
+                                        <div class="w-10 h-10 md:w-12 md:h-12 bg-black rounded-lg flex items-center justify-center">
+                                            <span class="text-white font-bold text-lg">D</span>
+                                        </div>
+                                    @endif
                                 </a>
                                 <div class="flex-1 text-center">
                                     <h1 class="text-lg font-semibold text-gray-800 truncate">{{ $header }}</h1>

@@ -18,7 +18,14 @@
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
             <div>
                 <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                    @if(!empty($platformSettings['site_logo']))
+                        {{-- Larger responsive logo for better visibility --}}
+                        <img src="{{ asset('storage/' . $platformSettings['site_logo']) }}" alt="Logo" class="w-[48px] h-16 md:w-[24px] md:h-12  rounded-lg">
+                    @else
+                        <div class="w-10 h-10 md:w-12 md:h-12 bg-black rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-lg">D</span>
+                        </div>
+                    @endif
                 </a>
             </div>
 
